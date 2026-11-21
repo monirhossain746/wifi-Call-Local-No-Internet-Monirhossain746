@@ -1,20 +1,18 @@
-*.iml
-.gradle
-.kotlin
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
+# Environment secrets
 .env
-debug.keystore
+.env.*
+!.env.example
+
+# Firebase private credentials
+**/service-account*.json
+**/firebase-adminsdk*.json
+**/*service-account*.json
+
+# Private signing credentials
 *.jks
 *.keystore
+my-upload-key.jks
+
+# Local configuration
+local.properties
+secrets.properties

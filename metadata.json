@@ -1,0 +1,6 @@
+{
+  "name": "Wifi Call Local",
+  "description": "Chat, call and share files over local WiFi — no internet needed.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.WifiCallLocal" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/blue_500</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/blue_100</item>
+        <item name="colorOnPrimaryContainer">@color/navy_900</item>
+
+        <item name="colorSecondary">@color/cyan_500</item>
+        <item name="colorOnSecondary">@color/navy_950</item>
+        <item name="colorSecondaryContainer">@color/light_surface_variant</item>
+        <item name="colorOnSecondaryContainer">@color/navy_900</item>
+
+        <item name="colorTertiary">@color/green_500</item>
+        <item name="colorOnTertiary">@color/navy_950</item>
+
+        <item name="android:colorBackground">@color/light_background</item>
+        <item name="colorSurface">@color/light_surface</item>
+        <item name="colorSurfaceVariant">@color/light_surface_variant</item>
+        <item name="colorOnSurface">@color/light_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/light_on_surface_variant</item>
+        <item name="colorOutline">@color/light_outline</item>
+        <item name="colorError">@color/red_700</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.WifiCallLocal.Medium</item>
+    </style>
+
+    <style name="Theme.WifiCallLocal.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/navy_900</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_art</item>
+        <item name="postSplashScreenTheme">@style/Theme.WifiCallLocal</item>
+    </style>
+
+    <style name="Theme.WifiCallLocal.Call" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/cyan_500</item>
+        <item name="android:colorBackground">@color/navy_950</item>
+        <item name="colorSurface">@color/navy_900</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="ShapeAppearance.WifiCallLocal.Medium" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="ShapeAppearance.WifiCallLocal.Circle" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>

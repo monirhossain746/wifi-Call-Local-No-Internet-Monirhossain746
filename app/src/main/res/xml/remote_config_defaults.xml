@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>is_app_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>maintenance_mode</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>maintenance_message</key>
+        <value>Online services are undergoing maintenance. Local WiFi chats, calls, and file sharing remain active.</value>
+    </entry>
+    <entry>
+        <key>latest_version</key>
+        <value>1.0</value>
+    </entry>
+    <entry>
+        <key>latest_version_code</key>
+        <value>1</value>
+    </entry>
+    <entry>
+        <key>update_link</key>
+        <value>https://github.com/monirhossain746/wifi-Call-Local-No-Internet-Monirhossain746</value>
+    </entry>
+    <entry>
+        <key>force_update</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>ads_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>max_cache_size_mb</key>
+        <value>500</value>
+    </entry>
+    <entry>
+        <key>online_services_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>group_calls_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>file_transfer_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>public_groups_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>everyone_group_enabled</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>update_message</key>
+        <value>A new update of Wifi Call Local is ready to install.</value>
+    </entry>
+</defaultsMap>

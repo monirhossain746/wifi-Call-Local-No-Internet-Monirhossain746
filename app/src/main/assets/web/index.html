@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Wifi Call Local — Companion</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div id="app" class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-avatar">W</div>
+        <div>
+          <h1>Wifi Call Local</h1>
+          <p id="host-info" class="subtitle">Connecting to local node…</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span id="conn-pill" class="pill offline">Disconnected</span>
+        <button id="theme-toggle-btn" class="icon-btn" type="button" title="Toggle Theme">◐</button>
+        <button id="qr-toggle-btn" class="btn-secondary" type="button">QR</button>
+      </div>
+    </header>
+
+    <div id="https-notice-banner" class="https-banner hidden">
+      <span>WebRTC mic/camera &amp; voice-note capture requires an HTTPS secure context or localhost. Messaging &amp; file sharing work normally over local HTTP.</span>
+    </div>
+
+    <div id="join-modal" class="modal">
+      <div class="modal-card">
+        <div class="modal-brand">Wifi Call Local</div>
+        <h2>Join Local Network</h2>
+        <p class="muted">Enter a display name (2–30 chars). No internet or account required — communicates directly with devices on your local WiFi.</p>
+        <input id="web-name-input" type="text" maxlength="30" placeholder="Display Name" />
+        <button id="join-btn" class="btn-primary" type="button">Continue</button>
+      </div>
+    </div>
+
+    <div id="qr-modal" class="modal hidden">
+      <div class="modal-card">
+        <h3>Share Local URL</h3>
+        <div id="web-qr-canvas" class="qr-box"></div>
+        <p id="web-qr-url" class="muted mono"></p>
+        <button id="qr-close-btn" class="btn-secondary" type="button">Close</button>
+      </div>
+    </div>
+
+    <!-- Private Group PIN Unlock Modal -->
+    <div id="pin-modal" class="modal hidden">
+      <div class="modal-card">
+        <div class="modal-brand">Private Group</div>
+        <h3 id="pin-modal-title">Enter Group PIN</h3>
+        <p id="pin-modal-sub" class="muted">Enter the group PIN to unlock messages and member list.</p>
+        <input id="pin-modal-input" type="password" maxlength="16" placeholder="Group PIN" autocomplete="off" />
+        <p id="pin-modal-error" class="error-text hidden"></p>
+        <div class="modal-actions-row">
+          <button id="pin-cancel-btn" class="btn-secondary" type="button">Cancel</button>
+          <button id="pin-submit-btn" class="btn-primary" type="button">Unlock</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Peer / Group Info Modal -->
+    <div id="room-info-modal" class="modal hidden">
+      <div class="modal-card">
+        <div class="modal-brand" id="info-modal-kind">DETAILS</div>
+        <h3 id="info-modal-title">Room Details</h3>
+        <div id="info-modal-body" class="info-modal-body"></div>
+        <button id="info-modal-close" class="btn-secondary" type="button">Close</button>
+      </div>
+    </div>
+
+    <!-- Forward Message Target Picker Modal -->
+    <div id="forward-modal" class="modal hidden">
+      <div class="modal-card">
+        <div class="modal-brand">Forward Message</div>
+        <h3>Select Destination</h3>
+        <p id="forward-preview" class="muted"></p>
+        <ul id="forward-targets-list" class="list modal-scroll-list"></ul>
+        <button id="forward-cancel-btn" class="btn-secondary" type="button">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Edit Message Modal -->
+    <div id="edit-modal" class="modal hidden">
+      <div class="modal-card">
+        <div class="modal-brand">Edit Message</div>
+        <h3>Update Message Text</h3>
+        <input id="edit-modal-input" type="text" maxlength="2000" placeholder="Updated message…" />
+        <div class="modal-actions-row">
+          <button id="edit-cancel-btn" class="btn-secondary" type="button">Cancel</button>
+          <button id="edit-save-btn" class="btn-primary" type="button">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reaction Picker & Who Reacted Modal -->
+    <div id="react-modal" class="modal hidden">
+      <div class="modal-card">
+        <div class="modal-brand">Reactions</div>
+        <h3>Tap Emoji to Toggle</h3>
+        <div id="emoji-picker-grid" class="emoji-grid"></div>
+        <div id="who-reacted-list" class="who-reacted-list"></div>
+        <button id="react-close-btn" class="btn-secondary" type="button">Close</button>
+      </div>
+    </div>
+
+    <!-- Image Zoom Lightbox Modal -->
+    <div id="image-modal" class="modal hidden">
+      <div class="image-modal-shell">
+        <div class="image-modal-bar">
+          <div class="image-modal-meta">
+            <strong id="img-modal-title">Image</strong>
+            <span id="img-modal-sub" class="muted"></span>
+          </div>
+          <div class="image-modal-actions">
+            <button id="img-zoom-out" class="btn-secondary" type="button">−</button>
+            <button id="img-zoom-reset" class="btn-secondary" type="button">100%</button>
+            <button id="img-zoom-in" class="btn-secondary" type="button">+</button>
+            <a id="img-modal-download" class="btn-primary" download>Download</a>
+            <button id="img-modal-close" class="btn-secondary" type="button">Close</button>
+          </div>
+        </div>
+        <div class="image-modal-stage" id="img-modal-stage">
+          <img id="img-modal-preview" alt="Preview" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Incoming & Active WebRTC Call Modal (1-to-1 + Group Mesh) -->
+    <div id="call-modal" class="modal hidden">
+      <div class="modal-card call-card">
+        <div class="call-badge" id="call-type-badge">VOICE CALL</div>
+        <div class="call-avatar" id="call-peer-avatar">P</div>
+        <h2 id="call-peer-name">Peer</h2>
+        <p id="call-status-text" class="call-status">Connecting…</p>
+        <p id="call-timer-text" class="call-timer">00:00</p>
+
+        <div id="call-participants-strip" class="call-participants-strip hidden"></div>
+
+        <div id="call-video-stage" class="video-stage hidden">
+          <video id="remote-video" autoplay playsinline></video>
+          <video id="local-video" autoplay muted playsinline></video>
+        </div>
+
+        <div id="group-media-grid" class="group-media-grid hidden"></div>
+        <audio id="remote-audio" autoplay></audio>
+
+        <div id="incoming-call-actions" class="call-actions hidden">
+          <button id="btn-call-decline" class="btn-danger" type="button">Decline</button>
+          <button id="btn-call-accept" class="btn-success" type="button">Accept</button>
+        </div>
+
+        <div id="active-call-actions" class="call-actions hidden">
+          <button id="btn-call-mute" class="btn-secondary" type="button">Mute</button>
+          <button id="btn-call-cam" class="btn-secondary hidden" type="button">Camera Off</button>
+          <button id="btn-call-flip" class="btn-secondary hidden" type="button">Flip Cam</button>
+          <button id="btn-call-end" class="btn-danger" type="button">End Call</button>
+        </div>
+      </div>
+    </div>
+
+    <main class="workspace">
+      <aside class="sidebar" id="sidebar-pane">
+        <section class="panel" data-pane="chats">
+          <div class="panel-head">
+            <h3>Public Groups</h3>
+            <span class="chip" id="groups-count">0</span>
+          </div>
+          <ul id="groups-list" class="list"></ul>
+        </section>
+
+        <section class="panel" data-pane="private-chats">
+          <div class="panel-head">
+            <h3>Private Groups</h3>
+            <span class="chip" id="private-groups-count">0</span>
+          </div>
+          <ul id="private-groups-list" class="list"></ul>
+        </section>
+
+        <section class="panel" data-pane="nearby">
+          <div class="panel-head">
+            <h3>Nearby &amp; Web Peers</h3>
+            <span class="chip" id="peers-count">0</span>
+          </div>
+          <ul id="peers-list" class="list"></ul>
+        </section>
+
+        <section class="panel" data-pane="calls">
+          <div class="panel-head">
+            <h3>Recent Calls</h3>
+          </div>
+          <ul id="calls-list" class="list"></ul>
+        </section>
+
+        <section class="panel notice" data-pane="info">
+          <h4>Protocol &amp; Browser Capabilities</h4>
+          <p>Supports public &amp; PIN-locked private groups, 1-to-1 peer chats, search, reply, edit, forward, multi-emoji reactions, inline audio/video playback, SHA-256 verified file transfers (up to 100 MB), and WebRTC voice/video calls.</p>
+          <p id="webrtc-capability-note">WebRTC voice/video signaling uses Host ICE over your LAN WebSocket.</p>
+        </section>
+      </aside>
+
+      <section class="chat-area" id="chat-pane">
+        <div class="chat-header">
+          <div class="chat-header-id">
+            <div class="avatar-sm" id="active-room-avatar">E</div>
+            <div>
+              <div class="room-title-row">
+                <h2 id="active-room-title">Everyone Room</h2>
+                <span id="active-room-dot" class="dot on hidden"></span>
+              </div>
+              <span id="active-room-sub" class="muted">Public local room</span>
+            </div>
+          </div>
+          <div class="chat-header-tools">
+            <button id="btn-search-toggle" class="icon-btn" type="button" title="Search messages">🔍</button>
+            <button id="btn-room-info" class="btn-secondary" type="button">Info</button>
+            <button id="btn-dm-voice" class="btn-secondary hidden" type="button">Voice</button>
+            <button id="btn-dm-video" class="btn-secondary hidden" type="button">Video</button>
+            <span id="me-badge" class="badge-web">Web</span>
+          </div>
+        </div>
+
+        <div id="chat-search-bar" class="search-bar hidden">
+          <input id="chat-search-input" type="text" placeholder="Search messages in this chat…" autocomplete="off" />
+          <span id="chat-search-count" class="muted"></span>
+          <button id="chat-search-clear" class="icon-btn" type="button">✕</button>
+        </div>
+
+        <div id="active-group-call-banner" class="group-call-banner hidden">
+          <span id="active-group-call-text">Active Group Call</span>
+          <button id="btn-join-group-call" class="btn-success" type="button">Join</button>
+        </div>
+
+        <div id="typing-banner" class="typing-banner hidden"></div>
+        <div id="messages-box" class="messages"></div>
+
+        <div id="upload-progress-wrap" class="upload-progress-wrap hidden">
+          <div class="upload-progress-meta">
+            <span id="upload-progress-label">Uploading…</span>
+            <span id="upload-progress-pct">0%</span>
+          </div>
+          <div class="upload-progress-track">
+            <div id="upload-progress-fill" class="upload-progress-fill"></div>
+          </div>
+        </div>
+
+        <div id="reply-banner" class="reply-banner hidden">
+          <span id="reply-banner-text"></span>
+          <button id="reply-cancel-btn" class="icon-btn" type="button">✕</button>
+        </div>
+
+        <div id="composer-lock-banner" class="composer-lock hidden"></div>
+
+        <form id="composer-form" class="composer">
+          <label id="file-upload-label" class="file-btn" title="Share file (max 100 MB)">
+            <input id="file-input" type="file" hidden />
+            <span>+ File</span>
+          </label>
+          <button id="btn-voice-note" class="icon-btn" type="button" title="Record voice note">🎤</button>
+          <input id="msg-input" type="text" placeholder="Type a local message…" autocomplete="off" />
+          <button id="btn-send" class="btn-primary" type="submit">Send</button>
+        </form>
+      </section>
+    </main>
+
+    <nav class="mobile-tabs" id="mobile-tabs">
+      <button type="button" class="tab-btn active" data-tab="chat">Chat</button>
+      <button type="button" class="tab-btn" data-tab="nearby">Nearby</button>
+      <button type="button" class="tab-btn" data-tab="calls">Calls</button>
+      <button type="button" class="tab-btn" data-tab="info">Info</button>
+    </nav>
+  </div>
+  <script src="/qrcode.min.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wifi Call Local</string>
+    <string name="app_tagline">ইন্টারনেট ছাড়াই লোকাল ওয়াইফাইয়ে চ্যাট, কল ও ফাইল শেয়ার করুন।</string>
+
+    <!-- Bottom Navigation Tabs -->
+    <string name="nav_home">হোম</string>
+    <string name="nav_chats">চ্যাট</string>
+    <string name="nav_nearby">আশেপাশে</string>
+    <string name="nav_calls">কল</string>
+    <string name="nav_settings">সেটিংস</string>
+
+    <!-- Common -->
+    <string name="ok">ঠিক আছে</string>
+    <string name="cancel">বাতিল</string>
+    <string name="save">সংরক্ষণ</string>
+    <string name="delete">মুছুন</string>
+    <string name="edit">সম্পাদনা</string>
+    <string name="close">বন্ধ</string>
+    <string name="retry">আবার চেষ্টা</string>
+    <string name="pause">বিরতি</string>
+    <string name="resume">চালু</string>
+    <string name="search">খুঁজুন</string>
+    <string name="copy">কপি</string>
+    <string name="share">শেয়ার</string>
+    <string name="join">যোগ দিন</string>
+    <string name="joined">যুক্ত</string>
+    <string name="leave">ত্যাগ করুন</string>
+    <string name="send">পাঠান</string>
+    <string name="connect">সংযুক্ত</string>
+    <string name="disconnect">বিচ্ছিন্ন</string>
+    <string name="open_settings">সেটিংস খুলুন</string>
+    <string name="press_back_again_to_exit">বের হতে আবার ব্যাক চাপুন</string>
+    <string name="copied_to_clipboard">ক্লিপবোর্ডে কপি হয়েছে</string>
+
+    <!-- Profile Setup -->
+    <string name="setup_profile_title">আপনার লোকাল প্রোফাইল তৈরি করুন</string>
+    <string name="setup_profile_subtitle">কোনো অ্যাকাউন্ট, ফোন নম্বর বা ইন্টারনেটের প্রয়োজন নেই। শুধুমাত্র একই ওয়াইফাই বা হটস্পটের ব্যবহারকারীদের কাছে দৃশ্যমান।</string>
+    <string name="hint_display_name">নাম (২–৩০ অক্ষর)</string>
+    <string name="hint_bio">সংক্ষিপ্ত বায়ো (ঐচ্ছিক, সর্বোচ্চ ৬০ অক্ষর)</string>
+    <string name="error_name_length">নাম ২ থেকে ৩০ অক্ষরের মধ্যে হতে হবে</string>
+    <string name="error_bio_length">বায়ো ৬০ অক্ষরের বেশি হতে পারবে না</string>
+    <string name="choose_photo_gallery">গ্যালারি থেকে বাছাই করুন</string>
+    <string name="take_photo_camera">ক্যামেরায় ছবি তুলুন</string>
+    <string name="remove_photo">ছবি সরান</string>
+    <string name="start_messaging">শুরু করুন</string>
+
+    <!-- Home Screen -->
+    <string name="home_network_card_title">লোকাল নেটওয়ার্ক নোড</string>
+    <string name="label_local_ip">লোকাল আইপি</string>
+    <string name="label_server_port">সার্ভার পোর্ট</string>
+    <string name="label_network_mode">নেটওয়ার্ক মোড</string>
+    <string name="label_status">অবস্থা</string>
+    <string name="status_listening">%1$s:%2$d-এ সচল</string>
+    <string name="status_no_local_network">কোনো লোকাল ওয়াইফাই, হটস্পট বা ওয়াইফাই ডাইরেক্ট পাওয়া যায়নি</string>
+    <string name="mode_auto">অটো</string>
+    <string name="mode_wifi">ওয়াইফাই রাউটার</string>
+    <string name="mode_hotspot">ফোন হটস্পট</string>
+    <string name="mode_wifi_direct">ওয়াইফাই ডাইরেক্ট</string>
+    <string name="auto_connected_via">অটো: %1$s মাধ্যমে সংযুক্ত</string>
+    <string name="action_scan_qr">কিউআর স্ক্যান</string>
+    <string name="action_new_group">নতুন গ্রুপ</string>
+    <string name="action_show_qr">কিউআর জয়েন</string>
+    <string name="action_manual_ip">ম্যানুয়াল আইপি</string>
+    <string name="section_nearby_users">আশেপাশের ব্যবহারকারী</string>
+    <string name="section_recent_chats">সাম্প্রতিক চ্যাট</string>
+    <string name="empty_nearby_home">এখনো আশেপাশে কাউকে পাওয়া যায়নি। স্ক্যান চাপুন অথবা একই ওয়াইফাই/হটস্পটে সংযুক্ত হন।</string>
+    <string name="empty_recent_chats">এখনো কোনো চ্যাট নেই। আশেপাশের কাউকে বা এভরিওয়ান রুম নির্বাচন করুন।</string>
+    <string name="everyone_room_title">এভরিওয়ান রুম</string>
+    <string name="everyone_room_desc">এই নেটওয়ার্কের সবার জন্য উন্মুক্ত লোকাল রুম</string>
+
+    <!-- Nearby -->
+    <string name="nearby_scan">আশেপাশে স্ক্যান</string>
+    <string name="nearby_group_room">এভরিওয়ান রুম</string>
+    <string name="nearby_all_groups">সকল গ্রুপ</string>
+    <string name="nearby_enter_ip">ম্যানুয়াল আইপি লিখুন</string>
+    <string name="nearby_hotspot_host">হটস্পট চালু</string>
+    <string name="nearby_wifi_direct">ওয়াইফাই ডাইরেক্ট</string>
+    <string name="btn_chat">চ্যাট</string>
+    <string name="btn_voice_call">ভয়েস</string>
+    <string name="btn_video_call">ভিডিও</string>
+    <string name="btn_add_friend">বন্ধু যোগ</string>
+    <string name="btn_remove_friend">বন্ধু</string>
+    <string name="btn_block">ব্লক</string>
+    <string name="badge_web">ওয়েব</string>
+    <string name="dialog_manual_ip_title">আইপি ঠিকানায় সংযুক্ত হন</string>
+    <string name="hint_ip_address">পিয়ার আইপি (যেমন 192.168.1.45)</string>
+    <string name="hint_port">পোর্ট (ডিফল্ট 8080)</string>
+    <string name="error_invalid_ip">সঠিক IPv4 ঠিকানা দিন</string>
+    <string name="connecting_to_peer">%1$s:%2$d-এর সাথে সংযুক্ত হচ্ছে…</string>
+
+    <!-- Statuses -->
+    <string name="presence_online">অনলাইন</string>
+    <string name="presence_away">অনুপস্থিত</string>
+    <string name="presence_busy">ব্যস্ত</string>
+    <string name="presence_dnd">বিরক্ত করবেন না</string>
+    <string name="presence_offline">অফলাইন</string>
+
+    <!-- Chats -->
+    <string name="search_chats_hint">চ্যাট বা মেসেজ খুঁজুন…</string>
+    <string name="hint_message">মেসেজ লিখুন…</string>
+    <string name="typing_indicator">%1$s টাইপ করছেন…</string>
+    <string name="replying_to">%1$s-কে উত্তর</string>
+    <string name="forwarded_label">ফরোয়ার্ডকৃত</string>
+    <string name="msg_deleted_placeholder">এই মেসেজটি মুছে ফেলা হয়েছে</string>
+    <string name="status_sending">পাঠানো হচ্ছে</string>
+    <string name="status_sent">পাঠানো হয়েছে</string>
+    <string name="status_delivered">পৌঁছেছে</string>
+    <string name="status_seen">দেখা হয়েছে</string>
+    <string name="action_reply">উত্তর</string>
+    <string name="action_forward">ফরোয়ার্ড</string>
+    <string name="action_react">রিঅ্যাক্ট</string>
+    <string name="action_delete_for_me">আমার জন্য মুছুন</string>
+    <string name="action_delete_for_everyone">সবার জন্য মুছুন</string>
+    <string name="action_clear_chat">চ্যাট পরিষ্কার</string>
+    <string name="action_delete_chat">চ্যাট মুছুন</string>
+    <string name="action_group_info">গ্রুপ তথ্য</string>
+    <string name="attach_photo_video">ছবি / ভিডিও</string>
+    <string name="attach_document">ডকুমেন্ট / ফাইল</string>
+    <string name="attach_audio">অডিও ফাইল</string>
+    <string name="recording_voice">ভয়েস রেকর্ড হচ্ছে… পাঠাতে আবার চাপুন</string>
+    <string name="voice_message_label">ভয়েস মেসেজ (%1$s)</string>
+    <string name="who_reacted_title">রিঅ্যাকশনসমূহ</string>
+    <string name="choose_reaction">ইমোজি বাছাই করুন</string>
+    <string name="select_forward_target">যাকে ফরোয়ার্ড করবেন…</string>
+
+    <!-- File Transfers -->
+    <string name="file_downloading">ডাউনলোড %1$d%% • %2$s</string>
+    <string name="file_uploading">আপলোড %1$d%% • %2$s</string>
+    <string name="file_paused">বিরতি (%1$d%%)</string>
+    <string name="file_completed">Downloads/WifiCallLocal/%1$s-এ সংরক্ষিত</string>
+    <string name="file_waiting_seeder">অনলাইন সিডারের জন্য অপেক্ষমাণ</string>
+    <string name="file_sha_verified">SHA-256 যাচাইকৃত</string>
+    <string name="file_sha_failed">চেকসাম মেলেনি</string>
+    <string name="file_download">ডাউনলোড</string>
+
+    <!-- Groups -->
+    <string name="create_group_title">গ্রুপ তৈরি করুন</string>
+    <string name="hint_group_name">গ্রুপের নাম</string>
+    <string name="hint_group_desc">বিবরণ</string>
+    <string name="label_private_group">প্রাইভেট (পিন সুরক্ষিত)</string>
+    <string name="hint_group_pin">৪–৮ সংখ্যার পিন</string>
+    <string name="all_groups_title">সকল লোকাল গ্রুপ</string>
+    <string name="section_private_groups">প্রাইভেট গ্রুপ</string>
+    <string name="section_public_groups">পাবলিক গ্রুপ</string>
+    <string name="filter_all">সব</string>
+    <string name="filter_joined">যুক্ত</string>
+    <string name="filter_not_joined">যুক্ত নয়</string>
+    <string name="filter_online_now">অনলাইন</string>
+    <string name="group_members_online">%1$d সদস্য • %2$d অনলাইন</string>
+    <string name="enter_pin_title">গ্রুপ পিন দিন</string>
+    <string name="enter_pin_desc">PBKDF2 এবং চ্যালেঞ্জ-রেসপন্স দ্বারা সুরক্ষিত। আসল পিন কখনো পাঠানো হয় না।</string>
+    <string name="pin_lockout_message">অনেক ভুল চেষ্টা। %1$d সেকেন্ডের জন্য লক।</string>
+    <string name="group_admins_only_toggle">শুধু অ্যাডমিন মেসেজ পাঠাতে পারবেন</string>
+    <string name="group_mute_toggle">নোটিফিকেশন মিউট</string>
+    <string name="group_rotate_pin">গ্রুপ পিন পরিবর্তন</string>
+    <string name="group_share_qr">গ্রুপ কিউআর আমন্ত্রণ</string>
+    <string name="group_add_member">সদস্য যোগ</string>
+    <string name="group_promote_admin">অ্যাডমিন করুন</string>
+    <string name="group_remove_member">অপসারণ</string>
+    <string name="role_owner">মালিক</string>
+    <string name="role_admin">অ্যাডমিন</string>
+    <string name="role_member">সদস্য</string>
+    <string name="group_admins_only_notice">এই গ্রুপে শুধুমাত্র অ্যাডমিনরা মেসেজ পাঠাতে পারবেন।</string>
+
+    <!-- QR -->
+    <string name="qr_join_title">ব্রাউজার বা অ্যাপে যুক্ত হোন</string>
+    <string name="qr_no_network_message">QR কোড তৈরি করতে WiFi বা Hotspot চালু করুন।</string>
+    <string name="qr_scan_instruction">অন্য ডিভাইসের Wifi Call Local QR কোডে ক্যামেরা ধরুন</string>
+    <string name="qr_browser_hint">একই ওয়াইফাই/হটস্পটের যেকোনো ব্রাউজারে %1$s খুলুন (ইন্টারনেট লাগবে না)।</string>
+    <string name="qr_https_limitation">নোট: আধুনিক ব্রাউজারে ভয়েস/ভিডিও কলের জন্য HTTPS প্রয়োজন; তবে মেসেজ ও ফাইল শেয়ারিং HTTP-তেই কাজ করে।</string>
+
+    <!-- Calls -->
+    <string name="calls_empty">এখনো কোনো কল হিস্ট্রি নেই।</string>
+    <string name="call_type_voice">ভয়েস কল</string>
+    <string name="call_type_video">ভিডিও কল</string>
+    <string name="call_status_ringing">রিং হচ্ছে…</string>
+    <string name="call_status_connecting">WebRTC (Host ICE) সংযুক্ত হচ্ছে…</string>
+    <string name="call_status_connected">সংযুক্ত</string>
+    <string name="call_status_busy">ব্যবহারকারী ব্যস্ত</string>
+    <string name="call_status_missed">মিসড কল</string>
+    <string name="call_status_rejected">কল প্রত্যাখ্যাত</string>
+    <string name="call_incoming_voice">আগত লোকাল ভয়েস কল</string>
+    <string name="call_incoming_video">আগত লোকাল ভিডিও কল</string>
+    <string name="call_accept">গ্রহণ</string>
+    <string name="call_reject">প্রত্যাখ্যান</string>
+    <string name="call_end">শেষ</string>
+    <string name="call_mute">মিউট</string>
+    <string name="call_speaker">স্পিকার</string>
+    <string name="call_camera">ক্যামেরা</string>
+    <string name="call_flip_camera">ঘোরান</string>
+    <string name="call_pip">PiP</string>
+    <string name="call_lan_note">লোকাল নেটওয়ার্কে সরাসরি Host ICE ব্যবহৃত হয় (১-টু-১ ও ৪–৬ জনের গ্রুপ মেশ কল সমর্থিত)।</string>
+    <string name="action_call_back">কল ব্যাক</string>
+    <string name="action_save_contact">কন্টাক্ট সেভ</string>
+    <string name="action_add_saved">সেভডে যোগ</string>
+    <string name="action_copy_ip">ঠিকানা কপি</string>
+    <string name="action_send_sms">SMS পাঠান</string>
+
+    <!-- Settings -->
+    <string name="settings_my_profile">আমার প্রোফাইল</string>
+    <string name="settings_device_id">ডিভাইস আইডি</string>
+    <string name="settings_active_status">সক্রিয় অবস্থা</string>
+    <string name="settings_connection_mode">সংযোগ মোড</string>
+    <string name="settings_auto_connect">অটো কানেক্ট</string>
+    <string name="settings_server_port">সার্ভার পোর্ট</string>
+    <string name="settings_storage">স্টোরেজ ও ডাউনলোড</string>
+    <string name="settings_notifications">নোটিফিকেশন</string>
+    <string name="settings_theme">থিম</string>
+    <string name="settings_language">ভাষা</string>
+    <string name="settings_privacy">গোপনীয়তা ও আস্থা</string>
+    <string name="settings_blocked_users">ব্লক তালিকা</string>
+    <string name="settings_saved_contacts">সংরক্ষিত কন্টাক্ট</string>
+    <string name="settings_battery_optimization">ব্যাকগ্রাউন্ড মেশ অপটিমাইজেশন</string>
+    <string name="settings_about_developer">অ্যাপ ও ডেভেলপার</string>
+
+    <string name="theme_system">সিস্টেম ডিফল্ট</string>
+    <string name="theme_dark">ডার্ক নেভি</string>
+    <string name="theme_light">লাইট</string>
+    <string name="lang_en">English</string>
+    <string name="lang_bn">বাংলা</string>
+
+    <!-- About & Developer -->
+    <string name="developer_name">Md. Monir Hossain</string>
+    <string name="developer_role">ওয়েব ডেভেলপার • এসইও এক্সপার্ট • গ্রাফিক ডিজাইনার • অ্যাপ ডেভেলপার</string>
+    <string name="developer_location">ময়মনসিংহ, বাংলাদেশ</string>
+    <string name="developer_bio">Welcome to my digital workspace. I\'m a passionate Web Developer, SEO Expert, Graphic Designer &amp; App Developer from Mymensingh, Bangladesh — delivering world-class digital solutions for businesses across 30+ countries. With 4+ years of experience and 700+ completed projects, I help brands build powerful online presence, rank higher on Google, and convert visitors into loyal customers.</string>
+    <string name="stat_experience">৪+ বছরের অভিজ্ঞতা</string>
+    <string name="stat_projects">৭০০+ প্রজেক্ট</string>
+    <string name="stat_countries">৩০+ দেশ</string>
+    <string name="btn_visit_portfolio">পোর্টফোলিও ওয়েবসাইট</string>
+    <string name="btn_facebook">ফেসবুক</string>
+    <string name="btn_contact_developer">যোগাযোগ করুন</string>
+
+    <!-- Privacy -->
+    <string name="privacy_title">গোপনীয়তা ও আস্থা</string>
+
+    <!-- Permissions -->
+    <string name="perm_rationale_title">অনুমতি প্রয়োজন</string>
+    <string name="perm_nearby_wifi">আশেপাশের ডিভাইস খুঁজতে ও WiFi Direct ব্যবহার করতে Nearby WiFi / লোকেশন অনুমতি প্রয়োজন। আপনার অবস্থান কখনো সংরক্ষণ বা পাঠানো হয় না।</string>
+    <string name="perm_camera">ভিডিও কল, কিউআর স্ক্যান বা প্রোফাইল ছবির জন্য ক্যামেরা অনুমতি প্রয়োজন।</string>
+    <string name="perm_microphone">ভয়েস কল, ভিডিও কল এবং ভয়েস মেসেজের জন্য মাইক্রোফোন অনুমতি প্রয়োজন।</string>
+    <string name="perm_notifications">আগত কল, মেসেজ ও ডাউনলোডের নোটিফিকেশন দেখাতে অনুমতি প্রয়োজন।</string>
+
+    <!-- Notifications -->
+    <string name="channel_mesh_name">লোকাল মেশ নেটওয়ার্ক সার্ভিস</string>
+    <string name="channel_mesh_desc">ওয়াইফাইয়ে লোকাল HTTP সার্ভার এবং পিয়ার ডিসকভারি সচল রাখে</string>
+    <string name="channel_messages_name">লোকাল মেসেজ</string>
+    <string name="channel_calls_name">আগত কল</string>
+    <string name="channel_files_name">ফাইল ট্রান্সফার</string>
+    <string name="notif_mesh_title">Wifi Call Local সক্রিয়</string>
+    <string name="notif_mesh_text">%1$s:%2$d-এ চালু • %3$d জন আশেপাশে</string>
+    <string name="battery_honest_note">নোট: অ্যান্ড্রয়েড ব্যাটারি সেভার স্ক্রিন অফ থাকলে ব্যাকগ্রাউন্ড সার্ভিস থামিয়ে দিতে পারে।</string>
+
+    <!-- File Card, Open/Download & Image Preview -->
+    <string name="btn_open_file">খুলুন</string>
+    <string name="btn_downloaded">ডাউনলোড সম্পন্ন</string>
+    <string name="error_download_before_open">ফাইলটি খোলার আগে অনুগ্রহ করে ডাউনলোড করুন।</string>
+    <string name="file_already_downloaded">যাচাইকৃত ফাইলটি আগেই ডাউনলোড করা আছে।</string>
+    <string name="preview_cached_badge">ডিভাইসে সংরক্ষিত</string>
+    <string name="preview_thumbnail_badge">শুধুমাত্র প্রিভিউ • মূল ফাইলের জন্য ডাউনলোড চাপুন</string>
+    <string name="image_count_format">%1$d / %2$d</string>
+
+    <!-- Firebase Remote Config -->
+    <string name="app_disabled_title">অ্যাপটি সাময়িকভাবে বন্ধ</string>
+    <string name="app_disabled_message_bn">অ্যাপটি বর্তমানে বন্ধ রাখা হয়েছে</string>
+    <string name="app_disabled_message_en">This application is currently disabled.</string>
+    <string name="btn_exit_app">বাহির</string>
+    <string name="btn_check_again">পুনরায় যাচাই করুন</string>
+    <string name="force_update_title">নতুন আপডেট উপলব্ধ</string>
+    <string name="force_update_default_msg">অ্যাপটি ব্যবহার চালিয়ে যেতে অনুগ্রহ করে নতুন সংস্করণে আপডেট করুন।</string>
+    <string name="btn_update_now">এখনই আপডেট করুন</string>
+    <string name="update_downloading">আপডেট ফাইল ডাউনলোড হচ্ছে…</string>
+    <string name="update_verifying">APK সিগনেচার ও সংস্করণ যাচাই করা হচ্ছে…</string>
+    <string name="update_perm_unknown_sources">অ্যান্ড্রয়েড সেটিংস থেকে এই অ্যাপের ইনস্টল অনুমতি চালু করে আবার চেষ্টা করুন।</string>
+    <string name="update_invalid_url">আপডেট ব্যর্থ: সঠিক HTTPS লিংক পাওয়া যায়নি।</string>
+    <string name="update_verify_failed">আপডেট বাতিল: APK সিগনেচার বা সংস্করণ যাচাই সফল হয়নি।</string>
+    <string name="update_download_failed">আপডেট ডাউনলোড ব্যর্থ হয়েছে। ইন্টারনেট সংযোগ পরীক্ষা করে আবার চেষ্টা করুন।</string>
+
+    <!-- Settings App Update Card -->
+    <string name="settings_app_update_title">অ্যাপ আপডেট</string>
+    <string name="btn_check_update">আপডেট যাচাই</string>
+    <string name="btn_manual_update">ম্যানুয়াল আপডেট</string>
+    <string name="settings_manual_update_subtitle">সর্বশেষ অ্যাপ রিলিজের জন্য অফিসিয়াল GitHub রিপোজিটরি দেখুন।</string>
+    <string name="btn_github_repository">GitHub রিপোজিটরি</string>
+    <string name="settings_installed_version_format">ইনস্টলকৃত সংস্করণ: v%1$s (বিল্ড %2$d)</string>
+    <string name="settings_latest_version_format">সর্বশেষ সংস্করণ: v%1$s (বিল্ড %2$d)</string>
+    <string name="settings_update_up_to_date">আপনি সর্বশেষ সংস্করণ ব্যবহার করছেন।</string>
+    <string name="settings_update_available_format">নতুন আপডেট পাওয়া গেছে (বিল্ড %1$d)। ইনস্টল করতে এখনই আপডেট চাপুন।</string>
+    <string name="settings_update_checking">রিমোট কনফিগ থেকে আপডেট যাচাই হচ্ছে…</string>
+    <string name="settings_update_badge_latest">আপডেটেড</string>
+    <string name="settings_update_badge_available">নতুন আপডেট</string>
+    <string name="settings_update_ready_install">APK যাচাই সম্পন্ন। অ্যান্ড্রয়েড ইনস্টলার চালু হচ্ছে…</string>
+    <string name="settings_update_offline_fallback">ক্যাশ করা সংস্করণ দেখানো হচ্ছে (অফলাইন বা রিমোট কনফিগ নিষ্ক্রিয়)।</string>
+    <string name="btn_clear_all_cache">সব ক্যাশ মুছুন</string>
+    <string name="action_edit_message">মেসেজ সম্পাদনা</string>
+    <string name="msg_edited_tag">(সম্পাদিত)</string>
+</resources>

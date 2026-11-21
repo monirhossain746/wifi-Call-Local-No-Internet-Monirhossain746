@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Deep Navy & Electric Blue / Cyan / Emerald Palette -->
+    <color name="navy_950">#060D1A</color>
+    <color name="navy_900">#0A1628</color>
+    <color name="navy_850">#0E1D34</color>
+    <color name="navy_800">#132642</color>
+    <color name="navy_700">#1B355C</color>
+
+    <color name="blue_500">#2979FF</color>
+    <color name="blue_400">#4D94FF</color>
+    <color name="blue_200">#99C2FF</color>
+    <color name="blue_100">#D6E7FF</color>
+
+    <color name="cyan_500">#00D4FF</color>
+    <color name="cyan_400">#38E0FF</color>
+    <color name="cyan_900">#003B4D</color>
+
+    <color name="green_500">#00E676</color>
+    <color name="green_700">#00B248</color>
+    <color name="amber_500">#FFB300</color>
+    <color name="red_500">#FF5252</color>
+    <color name="red_700">#D32F2F</color>
+
+    <!-- Light Theme Surface Tokens -->
+    <color name="light_background">#F4F7FC</color>
+    <color name="light_surface">#FFFFFF</color>
+    <color name="light_surface_variant">#E8EEF7</color>
+    <color name="light_on_surface">#0A1628</color>
+    <color name="light_on_surface_variant">#4A5B75</color>
+    <color name="light_outline">#C8D4E6</color>
+
+    <!-- Dark Theme Surface Tokens -->
+    <color name="dark_background">#060D1A</color>
+    <color name="dark_surface">#0A1628</color>
+    <color name="dark_surface_container">#102038</color>
+    <color name="dark_surface_variant">#162B4A</color>
+    <color name="dark_on_surface">#F0F6FF</color>
+    <color name="dark_on_surface_variant">#9EB2CE</color>
+    <color name="dark_outline">#233D63</color>
+
+    <!-- Semantic Status Colors -->
+    <color name="status_online">#00E676</color>
+    <color name="status_away">#FFB300</color>
+    <color name="status_busy">#FF5252</color>
+    <color name="status_offline">#64748B</color>
+
+    <!-- Chat Bubble Colors -->
+    <color name="bubble_outgoing_dark">#15489E</color>
+    <color name="bubble_incoming_dark">#132642</color>
+    <color name="bubble_outgoing_light">#2979FF</color>
+    <color name="bubble_incoming_light">#E8EEF7</color>
+
+    <color name="ic_launcher_bg">#091830</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+</resources>

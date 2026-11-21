@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wifi Call Local</string>
+    <string name="app_tagline">Chat, call and share files over local WiFi — no internet needed.</string>
+
+    <!-- Bottom Navigation Tabs -->
+    <string name="nav_home">Home</string>
+    <string name="nav_chats">Chats</string>
+    <string name="nav_nearby">Nearby</string>
+    <string name="nav_calls">Calls</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Common -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="close">Close</string>
+    <string name="retry">Retry</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="search">Search</string>
+    <string name="copy">Copy</string>
+    <string name="share">Share</string>
+    <string name="join">Join</string>
+    <string name="joined">Joined</string>
+    <string name="leave">Leave</string>
+    <string name="send">Send</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="press_back_again_to_exit">Press back again to exit</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
+
+    <!-- Profile Setup / Onboarding -->
+    <string name="setup_profile_title">Create Your Local Profile</string>
+    <string name="setup_profile_subtitle">No account, phone number, or internet required. Visible only to peers on your local WiFi, Hotspot, or WiFi Direct.</string>
+    <string name="hint_display_name">Display Name (2–30 chars)</string>
+    <string name="hint_bio">Short Bio (optional, max 60 chars)</string>
+    <string name="error_name_length">Name must be between 2 and 30 characters</string>
+    <string name="error_bio_length">Bio must be 60 characters or fewer</string>
+    <string name="choose_photo_gallery">Choose from Gallery</string>
+    <string name="take_photo_camera">Take Photo</string>
+    <string name="remove_photo">Remove Photo</string>
+    <string name="start_messaging">Continue</string>
+
+    <!-- Home Screen -->
+    <string name="home_network_card_title">Local Network Node</string>
+    <string name="label_local_ip">Local IP</string>
+    <string name="label_server_port">Server Port</string>
+    <string name="label_network_mode">Network Mode</string>
+    <string name="label_status">Status</string>
+    <string name="status_listening">Listening on %1$s:%2$d</string>
+    <string name="status_no_local_network">No local WiFi, Hotspot, or WiFi Direct network detected</string>
+    <string name="mode_auto">Auto</string>
+    <string name="mode_wifi">WiFi Router</string>
+    <string name="mode_hotspot">Phone Hotspot</string>
+    <string name="mode_wifi_direct">WiFi Direct</string>
+    <string name="auto_connected_via">Auto: connected via %1$s</string>
+    <string name="action_scan_qr">Scan QR</string>
+    <string name="action_new_group">New Group</string>
+    <string name="action_show_qr">QR Join</string>
+    <string name="action_manual_ip">Manual IP</string>
+    <string name="section_nearby_users">Nearby Users</string>
+    <string name="section_recent_chats">Recent Chats</string>
+    <string name="empty_nearby_home">No nearby devices found yet. Tap Scan or make sure peers are on the same WiFi or Hotspot.</string>
+    <string name="empty_recent_chats">No conversations yet. Pick a nearby user or open the Everyone Room to start chatting.</string>
+    <string name="everyone_room_title">Everyone Room</string>
+    <string name="everyone_room_desc">Public local room for all peers on this network</string>
+
+    <!-- Nearby Screen -->
+    <string name="nearby_scan">Scan Nearby</string>
+    <string name="nearby_group_room">Everyone Room</string>
+    <string name="nearby_all_groups">All Groups</string>
+    <string name="nearby_enter_ip">Enter IP Manually</string>
+    <string name="nearby_hotspot_host">Host Hotspot</string>
+    <string name="nearby_wifi_direct">WiFi Direct</string>
+    <string name="btn_chat">Chat</string>
+    <string name="btn_voice_call">Voice</string>
+    <string name="btn_video_call">Video</string>
+    <string name="btn_add_friend">Add Friend</string>
+    <string name="btn_remove_friend">Friend</string>
+    <string name="btn_block">Block</string>
+    <string name="badge_web">Web</string>
+    <string name="dialog_manual_ip_title">Connect by IP Address</string>
+    <string name="hint_ip_address">Peer IP (e.g. 192.168.1.45)</string>
+    <string name="hint_port">Port (default 8080)</string>
+    <string name="error_invalid_ip">Please enter a valid IPv4 address</string>
+    <string name="connecting_to_peer">Connecting to %1$s:%2$d…</string>
+
+    <!-- Statuses -->
+    <string name="presence_online">Online</string>
+    <string name="presence_away">Away</string>
+    <string name="presence_busy">Busy</string>
+    <string name="presence_dnd">Do Not Disturb</string>
+    <string name="presence_offline">Offline</string>
+
+    <!-- Chats & Messaging -->
+    <string name="search_chats_hint">Search chats or messages…</string>
+    <string name="hint_message">Type a message…</string>
+    <string name="typing_indicator">%1$s is typing…</string>
+    <string name="replying_to">Replying to %1$s</string>
+    <string name="forwarded_label">Forwarded</string>
+    <string name="msg_deleted_placeholder">This message was deleted</string>
+    <string name="status_sending">Sending</string>
+    <string name="status_sent">Sent</string>
+    <string name="status_delivered">Delivered</string>
+    <string name="status_seen">Seen</string>
+    <string name="action_reply">Reply</string>
+    <string name="action_forward">Forward</string>
+    <string name="action_react">React</string>
+    <string name="action_delete_for_me">Delete for me</string>
+    <string name="action_delete_for_everyone">Delete for everyone</string>
+    <string name="action_clear_chat">Clear chat</string>
+    <string name="action_delete_chat">Delete chat</string>
+    <string name="action_group_info">Group info</string>
+    <string name="attach_photo_video">Photo / Video (Photo Picker)</string>
+    <string name="attach_document">Document / Any File</string>
+    <string name="attach_audio">Audio File</string>
+    <string name="recording_voice">Recording voice note… Tap again to send</string>
+    <string name="voice_message_label">Voice message (%1$s)</string>
+    <string name="who_reacted_title">Reactions</string>
+    <string name="choose_reaction">React with emoji</string>
+    <string name="select_forward_target">Forward message to…</string>
+
+    <!-- File Transfers -->
+    <string name="file_downloading">Downloading %1$d%% • %2$s</string>
+    <string name="file_uploading">Uploading %1$d%% • %2$s</string>
+    <string name="file_paused">Paused (%1$d%%)</string>
+    <string name="file_completed">Saved to Downloads/WifiCallLocal/%1$s</string>
+    <string name="file_waiting_seeder">Waiting for an online seeder</string>
+    <string name="file_sha_verified">SHA-256 Verified</string>
+    <string name="file_sha_failed">Checksum mismatch</string>
+    <string name="file_download">Download</string>
+
+    <!-- Groups & All Groups Directory -->
+    <string name="create_group_title">Create Group</string>
+    <string name="hint_group_name">Group Name</string>
+    <string name="hint_group_desc">Description</string>
+    <string name="label_private_group">Private (PIN-protected)</string>
+    <string name="hint_group_pin">4–8 digit PIN</string>
+    <string name="all_groups_title">All Local Groups</string>
+    <string name="section_private_groups">Private Groups</string>
+    <string name="section_public_groups">Public Groups</string>
+    <string name="filter_all">All</string>
+    <string name="filter_joined">Joined</string>
+    <string name="filter_not_joined">Not Joined</string>
+    <string name="filter_online_now">Online Now</string>
+    <string name="group_members_online">%1$d members • %2$d online</string>
+    <string name="enter_pin_title">Enter Group PIN</string>
+    <string name="enter_pin_desc">Secured with PBKDF2 + challenge-response. Raw PIN is never transmitted.</string>
+    <string name="pin_lockout_message">Too many failed attempts. Locked for %1$d seconds.</string>
+    <string name="group_admins_only_toggle">Only admins can send messages</string>
+    <string name="group_mute_toggle">Mute notifications</string>
+    <string name="group_rotate_pin">Rotate Group PIN</string>
+    <string name="group_share_qr">Group QR Invite</string>
+    <string name="group_add_member">Add Member</string>
+    <string name="group_promote_admin">Make Admin</string>
+    <string name="group_remove_member">Remove</string>
+    <string name="role_owner">Owner</string>
+    <string name="role_admin">Admin</string>
+    <string name="role_member">Member</string>
+    <string name="group_admins_only_notice">Only group admins can send messages in this group.</string>
+
+    <!-- QR Code -->
+    <string name="qr_join_title">Join via Browser or App</string>
+    <string name="qr_no_network_message">Turn on WiFi or Hotspot to generate the QR code.</string>
+    <string name="qr_scan_instruction">Point your camera at another device\'s Wifi Call Local QR code</string>
+    <string name="qr_browser_hint">Any browser on the same WiFi/Hotspot can open %1$s (no internet needed).</string>
+    <string name="qr_https_limitation">Note: Browser voice/video calling requires a secure HTTPS context in modern browsers; messaging and file sharing work directly over local HTTP.</string>
+
+    <!-- Calls -->
+    <string name="calls_empty">No call history yet. Call any nearby peer over local WiFi.</string>
+    <string name="call_type_voice">Voice Call</string>
+    <string name="call_type_video">Video Call</string>
+    <string name="call_status_ringing">Ringing…</string>
+    <string name="call_status_connecting">Connecting WebRTC (Host ICE)…</string>
+    <string name="call_status_connected">Connected</string>
+    <string name="call_status_busy">User is busy</string>
+    <string name="call_status_missed">Missed call</string>
+    <string name="call_status_rejected">Call declined</string>
+    <string name="call_status_no_answer">No answer</string>
+    <string name="call_incoming_voice">Incoming Local Voice Call</string>
+    <string name="call_incoming_video">Incoming Local Video Call</string>
+    <string name="call_accept">Accept</string>
+    <string name="call_reject">Decline</string>
+    <string name="call_end">End</string>
+    <string name="call_mute">Mute</string>
+    <string name="call_speaker">Speaker</string>
+    <string name="call_camera">Camera</string>
+    <string name="call_flip_camera">Flip</string>
+    <string name="call_pip">PiP</string>
+    <string name="call_lan_note">Uses direct Host ICE candidates on your local network (supports 1-to-1 and 4–6 mesh participants; client-isolated router APs may block peer-to-peer media).</string>
+    <string name="action_call_back">Call Back</string>
+    <string name="action_save_contact">Save Contact</string>
+    <string name="action_add_saved">Add to Saved</string>
+    <string name="action_copy_ip">Copy Address</string>
+    <string name="action_send_sms">Send SMS</string>
+
+    <!-- Settings -->
+    <string name="settings_my_profile">My Profile</string>
+    <string name="settings_device_id">Device ID</string>
+    <string name="settings_active_status">Active Status</string>
+    <string name="settings_connection_mode">Connection Mode</string>
+    <string name="settings_auto_connect">Auto Connect</string>
+    <string name="settings_server_port">Server Port</string>
+    <string name="settings_storage">Storage &amp; Downloads</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_privacy">Privacy &amp; Trust</string>
+    <string name="settings_blocked_users">Blocked Users</string>
+    <string name="settings_saved_contacts">Saved Contacts</string>
+    <string name="settings_battery_optimization">Background Mesh Optimization</string>
+    <string name="settings_about_developer">About &amp; Developer</string>
+
+    <string name="theme_system">System Default</string>
+    <string name="theme_dark">Dark Navy</string>
+    <string name="theme_light">Light</string>
+    <string name="lang_en">English</string>
+    <string name="lang_bn">বাংলা (Bangla)</string>
+
+    <!-- About & Developer -->
+    <string name="developer_name">Md. Monir Hossain</string>
+    <string name="developer_role">Web Developer • SEO Expert • Graphic Designer • App Developer</string>
+    <string name="developer_location">Mymensingh, Bangladesh</string>
+    <string name="developer_bio">Welcome to my digital workspace. I\'m a passionate Web Developer, SEO Expert, Graphic Designer &amp; App Developer from Mymensingh, Bangladesh — delivering world-class digital solutions for businesses across 30+ countries. With 4+ years of experience and 700+ completed projects, I help brands build powerful online presence, rank higher on Google, and convert visitors into loyal customers.</string>
+    <string name="stat_experience">4+ Years Experience</string>
+    <string name="stat_projects">700+ Projects</string>
+    <string name="stat_countries">30+ Countries</string>
+    <string name="btn_visit_portfolio">Visit Portfolio Website</string>
+    <string name="btn_github_repository">GitHub Repository</string>
+    <string name="btn_facebook">Facebook</string>
+    <string name="btn_contact_developer">Contact Developer</string>
+
+    <!-- Privacy & Trust -->
+    <string name="privacy_title">Privacy &amp; Trust</string>
+    <string name="privacy_statement_en">• Local Messages: All messages and group histories are stored exclusively on your device in local Room SQLite storage.\n• Local File Storage: Shared media and documents are saved directly under Downloads/WifiCallLocal/ on your device.\n• No Account &amp; No Login: No phone number, email, password, or registration is ever required.\n• No Central Communication Server: Devices communicate peer-to-peer over your local WiFi, Hotspot, or WiFi Direct.\n• No Contact Synchronization &amp; No Selling User Data: We never upload your address book or sell personal data.\n• Advertising Notice: When internet connectivity is available, Google AdMob may process advertising-related device identifiers and diagnostic signals according to your consent choices. The app remains 100% functional without internet.</string>
+    <string name="privacy_statement_bn">• স্থানীয় মেসেজ: আপনার সকল চ্যাট ও গ্রুপ হিস্ট্রি শুধুমাত্র আপনার ডিভাইসের লোকাল Room ডাটাবেসে সংরক্ষিত থাকে।\n• স্থানীয় ফাইল স্টোরেজ: আদান-প্রদানকৃত ফাইলসমূহ সরাসরি Downloads/WifiCallLocal/ ফোল্ডারে সংরক্ষিত হয়।\n• কোনো অ্যাকাউন্ট বা লগইন নেই: কোনো ফোন নম্বর, ইমেইল বা রেজিস্ট্রেশনের প্রয়োজন নেই।\n• কোনো কেন্দ্রীয় সার্ভার নেই: লোকাল WiFi, হটস্পট বা WiFi Direct-এর মাধ্যমে সরাসরি পিয়ার-টু-পিয়ার যোগাযোগ হয়।\n• কন্টাক্ট সিঙ্ক বা ডেটা বিক্রি নেই: আপনার কন্টাক্ট আপলোড বা কোনো তথ্য বিক্রি করা হয় না।\n• বিজ্ঞাপন তথ্য: ইন্টারনেট সংযোগ সক্রিয় থাকলে Google AdMob আপনার সম্মতি অনুযায়ী বিজ্ঞাপন-সম্পর্কিত তথ্য প্রক্রিয়া করতে পারে। ইন্টারনেট ছাড়াও অ্যাপটি সম্পূর্ণ ব্যবহারযোগ্য।</string>
+
+    <!-- Permissions Rationales -->
+    <string name="perm_rationale_title">Permission Required</string>
+    <string name="perm_nearby_wifi">Wifi Call Local needs Nearby WiFi / Location access to discover nearby peers via WiFi Direct, mDNS, and Local Hotspot. Your physical location is never tracked or uploaded.</string>
+    <string name="perm_camera">Camera permission is needed to capture video calls, scan peer QR codes, or take a profile photo.</string>
+    <string name="perm_microphone">Microphone permission is required for local voice calls, video call audio, and voice messages.</string>
+    <string name="perm_notifications">Notification permission lets Wifi Call Local alert you to incoming calls, messages, and file downloads while running in the background.</string>
+
+    <!-- Notifications & Services -->
+    <string name="channel_mesh_name">Local Mesh Network Service</string>
+    <string name="channel_mesh_desc">Keeps local HTTP server and peer discovery active on WiFi</string>
+    <string name="channel_messages_name">Local Messages</string>
+    <string name="channel_calls_name">Incoming Calls</string>
+    <string name="channel_files_name">File Transfers</string>
+    <string name="notif_mesh_title">Wifi Call Local is active</string>
+    <string name="notif_mesh_text">Listening on %1$s:%2$d • %3$d nearby peers</string>
+    <string name="battery_honest_note">Note: Android battery savers and OEM background killers may pause background services when the screen is off. Exempting battery optimization improves reliability but cannot guarantee permanent OS uptime.</string>
+
+    <!-- File Card, Open/Download & Image Preview -->
+    <string name="btn_open_file">Open</string>
+    <string name="btn_downloaded">Downloaded</string>
+    <string name="error_download_before_open">Please download this file before opening it.</string>
+    <string name="file_already_downloaded">Verified file is already downloaded.</string>
+    <string name="preview_cached_badge">Cached on device</string>
+    <string name="preview_thumbnail_badge">Preview only • Tap Download for original</string>
+    <string name="image_count_format">%1$d / %2$d</string>
+
+    <!-- AdMob Adaptive Banner Config (Production IDs restored) -->
+    <string name="admob_app_id" translatable="false">ca-app-pub-3181872815781744~9879947642</string>
+    <string name="admob_adaptive_banner_unit_id" translatable="false">ca-app-pub-3181872815781744/1818458941</string>
+
+    <!-- Firebase Remote Config: Kill Switch & Force Update -->
+    <string name="app_disabled_title">App Unavailable</string>
+    <string name="app_disabled_message_bn">অ্যাপটি বর্তমানে বন্ধ রাখা হয়েছে</string>
+    <string name="app_disabled_message_en">This application is currently disabled.</string>
+    <string name="btn_exit_app">Exit</string>
+    <string name="btn_check_again">Check Status</string>
+    <string name="force_update_title">New Update Available</string>
+    <string name="force_update_default_msg">A required update is available. Please update to continue using Wifi Call Local.</string>
+    <string name="optional_update_title">Update Available</string>
+    <string name="maintenance_mode_title">Maintenance Notice</string>
+    <string name="btn_update_now">Update Now</string>
+    <string name="update_downloading">Downloading update package…</string>
+    <string name="update_verifying">Verifying APK signature and version…</string>
+    <string name="update_perm_unknown_sources">Please allow installing updates from this app in Android Settings, then tap Update Now again.</string>
+    <string name="update_invalid_url">Update failed: invalid or insecure download link.</string>
+    <string name="update_verify_failed">Update rejected: downloaded APK signature or version verification failed.</string>
+    <string name="update_download_failed">Update download failed. Please check your connection and try again.</string>
+
+    <!-- Settings App Update Card & Manual Update -->
+    <string name="settings_app_update_title">App Update</string>
+    <string name="btn_check_update">Check Update</string>
+    <string name="btn_manual_update">Manual Update</string>
+    <string name="settings_manual_update_subtitle">Visit the official GitHub repository for the latest application release.</string>
+    <string name="error_no_browser_github">No browser or GitHub app found to open the repository link.</string>
+    <string name="settings_installed_version_format">Installed Version: v%1$s (Build %2$d)</string>
+    <string name="settings_latest_version_format">Latest Available: v%1$s (Build %2$d)</string>
+    <string name="settings_update_up_to_date">You are using the latest version.</string>
+    <string name="settings_update_available_format">Update available (Build %1$d). Tap Update Now to download and install.</string>
+    <string name="settings_update_checking">Checking remote config for updates…</string>
+    <string name="settings_update_badge_latest">Up to Date</string>
+    <string name="settings_update_badge_available">Update Available</string>
+    <string name="settings_update_ready_install">APK verified. Launching Android package installer…</string>
+    <string name="settings_update_offline_fallback">Cached version shown (offline or Firebase config not active).</string>
+
+    <!-- Storage & Cache Management -->
+    <string name="settings_section_storage_cache">Storage &amp; Cache</string>
+    <string name="settings_current_cache_format">Current Cache Size: %1$s</string>
+    <string name="settings_max_cache_format">Maximum Cache Size: %1$d MB (auto LRU cleanup)</string>
+    <string name="btn_clear_all_cache">Clear All Cache</string>
+    <string name="clear_cache_confirm_title">Clear Temporary Cache?</string>
+    <string name="clear_cache_confirm_message">This clears temporary image/update caches and completed transfer chunks.\n\nPreserved safely: messages, groups, saved contacts, Room database, and files saved in Downloads/WifiCallLocal/.</string>
+    <string name="clear_cache_done_format">Cleared %1$s of temporary cache. Messages and saved downloads remain safe.</string>
+
+    <!-- Live Diagnostics & Feature Flags -->
+    <string name="settings_section_firebase_status">Application Status — Firebase</string>
+    <string name="settings_section_admob_status">Application Status — AdMob</string>
+    <string name="settings_section_comm_status">Communication Status</string>
+    <string name="feature_disabled_remote">Disabled temporarily via Remote Config.</string>
+
+    <!-- Message Editing & Group Calls -->
+    <string name="action_edit_message">Edit message</string>
+    <string name="edit_message_title">Edit Message</string>
+    <string name="msg_edited_tag">(edited)</string>
+    <string name="group_voice_call">Group Voice</string>
+    <string name="group_video_call">Group Video</string>
+    <string name="active_group_call_join">Active Group Call • Tap to Join (%1$d)</string>
+    <string name="group_demote_admin">Demote to member</string>
+    <string name="view_profile">View Profile</string>
+</resources>

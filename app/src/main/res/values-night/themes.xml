@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.WifiCallLocal" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/cyan_500</item>
+        <item name="colorOnPrimary">@color/navy_950</item>
+        <item name="colorPrimaryContainer">@color/navy_700</item>
+        <item name="colorOnPrimaryContainer">@color/blue_100</item>
+
+        <item name="colorSecondary">@color/blue_400</item>
+        <item name="colorOnSecondary">@color/navy_950</item>
+        <item name="colorSecondaryContainer">@color/navy_800</item>
+        <item name="colorOnSecondaryContainer">@color/dark_on_surface</item>
+
+        <item name="colorTertiary">@color/green_500</item>
+        <item name="colorOnTertiary">@color/navy_950</item>
+
+        <item name="android:colorBackground">@color/dark_background</item>
+        <item name="colorSurface">@color/dark_surface</item>
+        <item name="colorSurfaceContainer">@color/dark_surface_container</item>
+        <item name="colorSurfaceVariant">@color/dark_surface_variant</item>
+        <item name="colorOnSurface">@color/dark_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/dark_on_surface_variant</item>
+        <item name="colorOutline">@color/dark_outline</item>
+        <item name="colorError">@color/red_500</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.WifiCallLocal.Medium</item>
+    </style>
+</resources>

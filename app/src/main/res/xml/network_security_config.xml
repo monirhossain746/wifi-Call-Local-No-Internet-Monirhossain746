@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!--
+        Wifi Call Local uses dynamic private RFC 1918 IPv4 addresses (192.168.x.x, 10.x.x.x,
+        172.16-31.x.x) for offline LAN/Hotspot/WiFi Direct HTTP chunk serving and WebSocket
+        signaling. Because Android network-security-config does not support CIDR IP wildcards,
+        base-config permits cleartext ONLY for sockets guarded at runtime by
+        NetworkUtils.isPrivateLanIp() and NetworkUtils.parseLocalLanHostPort(), while all
+        known external/cloud domains enforce cleartextTrafficPermitted="false" (HTTPS only).
+    -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">googleapis.com</domain>
+        <domain includeSubdomains="true">firebaseapp.com</domain>
+        <domain includeSubdomains="true">firebaseio.com</domain>
+        <domain includeSubdomains="true">google.com</domain>
+        <domain includeSubdomains="true">gstatic.com</domain>
+        <domain includeSubdomains="true">googlesyndication.com</domain>
+        <domain includeSubdomains="true">doubleclick.net</domain>
+        <domain includeSubdomains="true">github.com</domain>
+        <domain includeSubdomains="true">githubusercontent.com</domain>
+    </domain-config>
+
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

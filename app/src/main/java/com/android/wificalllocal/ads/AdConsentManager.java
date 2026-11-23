@@ -1,6 +1,7 @@
 package com.android.wificalllocal.ads;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,7 +43,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AdConsentManager {
 
     private static final String TAG = "AdMobBanner";
-    public static final String GOOGLE_TEST_BANNER_UNIT_ID = "ca-app-pub-3940256099942544/9214589741";
+    public static final String PRODUCTION_BANNER_UNIT_ID = "ca-app-pub-3181872815781744/1818458941";
     private static final long RETRY_COOLDOWN_MS = 15_000L;
 
     private static final AtomicBoolean PROCESS_MOBILE_ADS_INIT_STARTED = new AtomicBoolean(false);
@@ -60,7 +61,6 @@ public class AdConsentManager {
     private View.OnLayoutChangeListener containerLayoutListener;
     private AdView currentAdView;
     private String currentAdUnitId;
-    private String adUnitIdOverrideForTesting;
     private AdSize lastComputedAdSize;
     private int lastAdWidthDp = -1;
     private long lastFailedTimestampMs = 0L;
@@ -83,9 +83,29 @@ public class AdConsentManager {
         processMobileAdsInitialized = false;
     }
 
-    @VisibleForTesting
-    public void setAdUnitIdOverrideForTesting(@Nullable String adUnitId) {
-        this.adUnitIdOverrideForTesting = adUnitId;
+    /**
+     * Initializes Google Mobile Ads SDK exactly once per application process.
+     * Safe to invoke from Application.onCreate() and/or Compose banner setup.
+     */
+    public static boolean ensureMobileAdsInitialized(@NonNull Context context) {
+        if (!PROCESS_MOBILE_ADS_INIT_STARTED.compareAndSet(false, true)) {
+            return false;
+        }
+        try {
+            RequestConfiguration config = new RequestConfiguration.Builder()
+                    .setMaxAdContentRating(RequestConfiguration.MAX_AD_CONTENT_RATING_G)
+                    .setTagForChildDirectedTreatment(
+                            RequestConfiguration.TAG_FOR_CHILD_DIRECTED_TREATMENT_UNSPECIFIED)
+                    .build();
+            MobileAds.setRequestConfiguration(config);
+            MobileAds.initialize(context.getApplicationContext(), initializationStatus -> {
+                processMobileAdsInitialized = true;
+                Log.d(TAG, "MobileAds.initialize() complete: " + initializationStatus.getAdapterStatusMap());
+            });
+        } catch (Throwable t) {
+            Log.e(TAG, "MobileAds.initialize() failed", t);
+        }
+        return true;
     }
 
     public void setAdsEnabledByRemoteConfig(boolean enabled) {
@@ -341,12 +361,71 @@ public class AdConsentManager {
     public AdView getCurrentAdView() { return currentAdView; }
     public boolean isAdLoaded() { return adLoaded; }
     public boolean isMobileAdsInitialized() { return processMobileAdsInitialized; }
+    public boolean isRemoteAdsEnabled() { return remoteAdsEnabled; }
+
+    public void syncComposeInitStarted(boolean initiatedHere) {
+        if (initiatedHere) {
+            mobileAdsInitCallCount.incrementAndGet();
+            initStatus = processMobileAdsInitialized ? "Initialized (AdMob SDK active)" : "Initializing MobileAds…";
+        } else if (processMobileAdsInitialized || PROCESS_MOBILE_ADS_INIT_STARTED.get()) {
+            initStatus = "Initialized (AdMob SDK active)";
+        }
+    }
+
+    public void recordComposeBannerLoading(@NonNull String adUnitId, @NonNull AdSize adSize) {
+        adLoading = true;
+        adLoaded = false;
+        lastComputedAdSize = adSize;
+        currentAdUnitId = adUnitId;
+        lastErrorCode = -1;
+        lastErrorMessage = "";
+        loadAdCallCount.incrementAndGet();
+        initStatus = processMobileAdsInitialized ? "Initialized (AdMob SDK active)" : "Initializing MobileAds…";
+        bannerStatus = "Loading Adaptive Banner (" + adUnitId + ")…";
+        availabilityStatus = "Requesting ad";
+    }
+
+    public void recordComposeBannerLoaded(@NonNull String adUnitId, @NonNull AdSize adSize, boolean suppressed) {
+        adLoading = false;
+        adLoaded = true;
+        lastComputedAdSize = adSize;
+        currentAdUnitId = adUnitId;
+        lastErrorCode = -1;
+        lastErrorMessage = "";
+        initStatus = "Initialized (AdMob SDK active)";
+        bannerStatus = "Loaded (" + adUnitId + ")";
+        availabilityStatus = suppressed ? "Loaded (Hidden on subscreen)" : "Visible";
+    }
+
+    public void recordComposeBannerFailed(int errorCode, @NonNull String errorMessage) {
+        adLoading = false;
+        adLoaded = false;
+        lastErrorCode = errorCode;
+        lastErrorMessage = errorMessage;
+        bannerStatus = "Failed (" + errorCode + ": " + errorMessage + ")";
+        availabilityStatus = "Failed (" + errorCode + ")";
+    }
+
+    public void recordComposeBannerOpened(@NonNull String adUnitId) {
+        adOpenedCount.incrementAndGet();
+        bannerStatus = "Opened (" + adUnitId + ")";
+    }
+
+    public void recordComposeBannerClosed(@NonNull String adUnitId) {
+        adClosedCount.incrementAndGet();
+        bannerStatus = adLoaded ? "Loaded (" + adUnitId + ")" : "Closed";
+    }
+
+    public void recordComposeBannerOffline() {
+        adLoading = false;
+        adLoaded = false;
+        initStatus = processMobileAdsInitialized ? "Initialized (AdMob SDK active)" : "Deferred (No Network Interface)";
+        bannerStatus = "Offline (Hidden)";
+        availabilityStatus = "Unavailable offline (app works normally)";
+    }
 
     public String resolveAdUnitId(Activity activity) {
-        if (adUnitIdOverrideForTesting != null && !adUnitIdOverrideForTesting.trim().isEmpty()) {
-            return adUnitIdOverrideForTesting.trim();
-        }
-        return activity.getString(R.string.admob_adaptive_banner_unit_id);
+        return PRODUCTION_BANNER_UNIT_ID;
     }
 
     private void initMobileAdsAndLoad(Activity activity, FrameLayout bannerContainer,

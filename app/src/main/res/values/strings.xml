@@ -265,8 +265,8 @@
     <string name="preview_thumbnail_badge">Preview only • Tap Download for original</string>
     <string name="image_count_format">%1$d / %2$d</string>
 
-    <!-- AdMob Adaptive Banner Config (Production IDs restored) -->
-    <string name="admob_app_id" translatable="false">ca-app-pub-3181872815781744~9879947642</string>
+    <!-- AdMob Adaptive Banner Config (Live Production IDs) -->
+    <string name="admob_app_id" translatable="false">ca-app-pub-3181872815781744~9894324318</string>
     <string name="admob_adaptive_banner_unit_id" translatable="false">ca-app-pub-3181872815781744/1818458941</string>
 
     <!-- Firebase Remote Config: Kill Switch & Force Update -->

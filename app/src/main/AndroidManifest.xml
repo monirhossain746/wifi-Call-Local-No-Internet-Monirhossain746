@@ -77,10 +77,10 @@
         android:theme="@style/Theme.WifiCallLocal"
         tools:targetApi="33">
 
-        <!-- Google Mobile Ads App ID (Replace @string/admob_app_id with your production AdMob App ID before final release) -->
+        <!-- Google Mobile Ads Production App ID -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3181872815781744~9879947642" />
+            android:value="ca-app-pub-3181872815781744~9894324318" />
 
         <activity
             android:name=".ui.MainActivity"

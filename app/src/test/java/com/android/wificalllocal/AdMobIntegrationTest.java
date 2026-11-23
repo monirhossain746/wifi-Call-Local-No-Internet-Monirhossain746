@@ -110,7 +110,6 @@ public class AdMobIntegrationTest {
         assertTrue(rc.getCachedSnapshot().adsEnabled);
 
         AdConsentManager mgr = new AdConsentManager();
-        mgr.setAdUnitIdOverrideForTesting(AdConsentManager.GOOGLE_TEST_BANNER_UNIT_ID);
         mgr.setAdsEnabledByRemoteConfig(true);
 
         // Simulate rapid onCreate + checkRemoteControlGate + onResume calls
@@ -135,7 +134,6 @@ public class AdMobIntegrationTest {
 
         // Ensure second AdConsentManager instance does NOT re-call MobileAds.initialize()
         AdConsentManager secondMgr = new AdConsentManager();
-        secondMgr.setAdUnitIdOverrideForTesting(AdConsentManager.GOOGLE_TEST_BANNER_UNIT_ID);
         FrameLayout secondContainer = new FrameLayout(host);
         secondMgr.initializeAndLoadBanner(host, secondContainer);
         Shadows.shadowOf(Looper.getMainLooper()).idleFor(3200, TimeUnit.MILLISECONDS);
@@ -151,7 +149,7 @@ public class AdMobIntegrationTest {
         assertEquals(ViewGroup.LayoutParams.WRAP_CONTENT, bannerContainer.getLayoutParams().height);
 
         AdView adView = (AdView) bannerContainer.getChildAt(0);
-        assertEquals(AdConsentManager.GOOGLE_TEST_BANNER_UNIT_ID, adView.getAdUnitId());
+        assertEquals(AdConsentManager.PRODUCTION_BANNER_UNIT_ID, adView.getAdUnitId());
         assertEquals(1, mgr.getLoadAdCallCount());
         assertEquals(android.view.Gravity.CENTER_HORIZONTAL,
                 ((FrameLayout.LayoutParams) adView.getLayoutParams()).gravity & android.view.Gravity.HORIZONTAL_GRAVITY_MASK);
@@ -227,7 +225,6 @@ public class AdMobIntegrationTest {
         host.setContentView(bannerContainer);
 
         AdConsentManager mgr = new AdConsentManager();
-        mgr.setAdUnitIdOverrideForTesting(AdConsentManager.GOOGLE_TEST_BANNER_UNIT_ID);
         mgr.initializeAndLoadBanner(host, bannerContainer);
         Shadows.shadowOf(Looper.getMainLooper()).idleFor(3200, TimeUnit.MILLISECONDS);
         Shadows.shadowOf(Looper.getMainLooper()).idle();
@@ -261,9 +258,9 @@ public class AdMobIntegrationTest {
         ApplicationInfo ai = ctx.getPackageManager().getApplicationInfo(
                 ctx.getPackageName(), PackageManager.GET_META_DATA);
         assertNotNull(ai.metaData);
-        assertEquals("ca-app-pub-3181872815781744~9879947642",
+        assertEquals("ca-app-pub-3181872815781744~9894324318",
                 ai.metaData.getString("com.google.android.gms.ads.APPLICATION_ID"));
-        assertEquals("ca-app-pub-3181872815781744~9879947642",
+        assertEquals("ca-app-pub-3181872815781744~9894324318",
                 ctx.getString(R.string.admob_app_id));
         assertEquals("ca-app-pub-3181872815781744/1818458941",
                 ctx.getString(R.string.admob_adaptive_banner_unit_id));

@@ -116,6 +116,7 @@ public class PeerConnectionManager {
     private final Gson gson = new Gson();
 
     private final Map<String, PeerClientSocket> outboundClients = new ConcurrentHashMap<>();
+    private final Map<String, PeerClientSocket> outboundClientsByIpPort = new ConcurrentHashMap<>();
     private final Map<String, NanoWSD.WebSocket> inboundSockets = new ConcurrentHashMap<>();
     private final Set<String> seenPacketIds = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Map<String, String> pendingGroupNonces = new ConcurrentHashMap<>();
@@ -124,6 +125,9 @@ public class PeerConnectionManager {
     private final Map<String, RelayedCallRecord> activeRelayedCalls = new ConcurrentHashMap<>();
     private final Map<String, GroupCallRoom> activeGroupCalls = new ConcurrentHashMap<>();
     private final Map<String, TokenBucket> rateLimitBuckets = new ConcurrentHashMap<>();
+    private final CallSignalingBuffer callSignalingBuffer = new CallSignalingBuffer();
+
+    private volatile UserProfileEntity cachedSelfProfile;
 
     private LocalHttpServer localHttpServer;
     private AppControlManager appControlManager;
@@ -144,6 +148,12 @@ public class PeerConnectionManager {
         this.fileTransferManager = fileTransferManager;
         this.notificationHelper = notificationHelper;
         this.derivedGroupKeys.putAll(prefs.loadAllSavedGroupKeys());
+        AppDatabase.DB_EXECUTOR.execute(() -> {
+            try {
+                cachedSelfProfile = db.userProfileDao().getProfileSync();
+            } catch (Exception ignored) {
+            }
+        });
     }
 
     public void attachServer(LocalHttpServer server) {
@@ -160,6 +170,20 @@ public class PeerConnectionManager {
 
     public void setCallSignalListener(CallSignalListener listener) {
         this.callSignalListener = listener;
+    }
+
+    public void drainBufferedCallSignals(String callId, CallSignalListener target) {
+        if (target == null || callId == null || callId.isEmpty()) return;
+        List<NetPacket> buffered = callSignalingBuffer.drainIncomingForCall(callId, System.currentTimeMillis());
+        if (buffered.isEmpty()) return;
+        Handler main = new Handler(Looper.getMainLooper());
+        for (NetPacket p : buffered) {
+            main.post(() -> target.onCallSignal(p));
+        }
+    }
+
+    public void markCallTerminated(String callId) {
+        callSignalingBuffer.markCallTerminated(callId, System.currentTimeMillis());
     }
 
     public void setTypingListener(TypingListener listener) {
@@ -203,7 +227,14 @@ public class PeerConnectionManager {
             } catch (Exception ignored) {
             }
         }
+        for (PeerClientSocket c : outboundClientsByIpPort.values()) {
+            try {
+                c.close();
+            } catch (Exception ignored) {
+            }
+        }
         outboundClients.clear();
+        outboundClientsByIpPort.clear();
         inboundSockets.clear();
     }
 
@@ -332,15 +363,28 @@ public class PeerConnectionManager {
             return; // Do not connect to self
         }
 
-        String key = knownDeviceId != null && !knownDeviceId.isEmpty() ? knownDeviceId : (ipAddress + ":" + port);
+        String ipPortKey = normalizedIp + ":" + port;
+        String key = knownDeviceId != null && !knownDeviceId.isEmpty() ? knownDeviceId : ipPortKey;
         PeerClientSocket existing = outboundClients.get(key);
-        if (existing != null && existing.isOpen()) return;
+        if (existing == null) existing = outboundClientsByIpPort.get(ipPortKey);
+        if (existing != null && existing.isOpen()) {
+            if (knownDeviceId != null && !knownDeviceId.isEmpty()) {
+                existing.setDiscoveredPeerId(knownDeviceId);
+                outboundClients.putIfAbsent(knownDeviceId, existing);
+                flushOutboundCallSignals(knownDeviceId);
+            }
+            return;
+        }
+        if (existing != null && !existing.isClosed() && !existing.isClosing()) {
+            return;
+        }
 
         AppDatabase.DB_EXECUTOR.execute(() -> {
             try {
-                URI uri = new URI("ws://" + ipAddress + ":" + port + "/ws");
-                PeerClientSocket client = new PeerClientSocket(uri, key, ipAddress, port);
+                URI uri = new URI("ws://" + normalizedIp + ":" + port + "/ws");
+                PeerClientSocket client = new PeerClientSocket(uri, key, normalizedIp, port);
                 outboundClients.put(key, client);
+                outboundClientsByIpPort.put(ipPortKey, client);
                 client.connect();
             } catch (Exception ignored) {
             }
@@ -348,7 +392,7 @@ public class PeerConnectionManager {
     }
 
     public boolean sendPacketToPeer(String peerId, NetPacket packet) {
-        if (peerId == null || peerId.isEmpty()) return false;
+        if (peerId == null || peerId.isEmpty() || packet == null) return false;
         String json = serializePacket(packet);
 
         PeerClientSocket out = outboundClients.get(peerId);
@@ -370,11 +414,97 @@ public class PeerConnectionManager {
         if (localHttpServer != null && localHttpServer.sendToWebClient(peerId, json)) {
             return true;
         }
-        PeerEntity peer = db.peerDao().getByIdSync(peerId);
-        if (peer != null && peer.ipAddress != null && !peer.ipAddress.isEmpty() && !peer.isWebUser) {
-            connectToPeer(peer.ipAddress, peer.port, peer.deviceId);
+
+        boolean isCallSignal = CallSignalingBuffer.isCallSignalingType(packet.type);
+        if (isCallSignal) {
+            callSignalingBuffer.enqueueOutbound(peerId, packet, System.currentTimeMillis());
+        }
+
+        // Resolve peer IP asynchronously if running on the UI thread, or synchronously on background thread
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            AppDatabase.DB_EXECUTOR.execute(() -> resolveSocketOrReconnect(peerId, isCallSignal));
+        } else {
+            return resolveSocketOrReconnectAndTrySend(peerId, json, packet, isCallSignal);
         }
         return false;
+    }
+
+    /**
+     * Convenience wrapper guaranteed safe to call from any thread (including UI thread) for call signaling.
+     */
+    public void sendCallPacketToPeer(String peerId, NetPacket packet) {
+        if (peerId == null || peerId.isEmpty() || packet == null) return;
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            AppDatabase.DB_EXECUTOR.execute(() -> sendPacketToPeer(peerId, packet));
+        } else {
+            sendPacketToPeer(peerId, packet);
+        }
+    }
+
+    private void resolveSocketOrReconnect(String peerId, boolean flushSignals) {
+        try {
+            PeerEntity peer = db.peerDao().getByIdSync(peerId);
+            if (peer == null || peer.ipAddress == null || peer.ipAddress.isEmpty() || peer.isWebUser) return;
+            String ipPortKey = peer.ipAddress.trim() + ":" + peer.port;
+            PeerClientSocket byIp = outboundClientsByIpPort.get(ipPortKey);
+            if (byIp != null && byIp.isOpen()) {
+                outboundClients.put(peerId, byIp);
+                if (flushSignals) flushOutboundCallSignals(peerId);
+                return;
+            }
+            connectToPeer(peer.ipAddress, peer.port, peer.deviceId);
+        } catch (Exception ignored) {
+        }
+    }
+
+    private boolean resolveSocketOrReconnectAndTrySend(String peerId, String json, NetPacket packet, boolean isCallSignal) {
+        try {
+            PeerEntity peer = db.peerDao().getByIdSync(peerId);
+            if (peer == null || peer.ipAddress == null || peer.ipAddress.isEmpty() || peer.isWebUser) return false;
+            String ipPortKey = peer.ipAddress.trim() + ":" + peer.port;
+            PeerClientSocket byIp = outboundClientsByIpPort.get(ipPortKey);
+            if (byIp != null && byIp.isOpen()) {
+                outboundClients.put(peerId, byIp);
+                if (isCallSignal) {
+                    flushOutboundCallSignals(peerId);
+                    return true;
+                }
+                byIp.send(json);
+                return true;
+            }
+            connectToPeer(peer.ipAddress, peer.port, peer.deviceId);
+        } catch (Exception ignored) {
+        }
+        return false;
+    }
+
+    private void flushOutboundCallSignals(String peerId) {
+        if (peerId == null || peerId.isEmpty()) return;
+        List<NetPacket> queued = callSignalingBuffer.drainOutbound(peerId, System.currentTimeMillis());
+        if (queued.isEmpty()) return;
+        for (NetPacket p : queued) {
+            String json = serializePacket(p);
+            PeerClientSocket out = outboundClients.get(peerId);
+            if (out != null && out.isOpen()) {
+                try {
+                    out.send(json);
+                    continue;
+                } catch (Exception ignored) {
+                }
+            }
+            NanoWSD.WebSocket in = inboundSockets.get(peerId);
+            if (in != null && in.isOpen()) {
+                try {
+                    in.send(json);
+                    continue;
+                } catch (Exception ignored) {
+                }
+            }
+            if (localHttpServer != null && localHttpServer.sendToWebClient(peerId, json)) {
+                continue;
+            }
+            callSignalingBuffer.enqueueOutbound(peerId, p, System.currentTimeMillis());
+        }
     }
 
     public int broadcastPacket(NetPacket packet) {
@@ -411,6 +541,7 @@ public class PeerConnectionManager {
 
     public void broadcastProfileUpdate() {
         AppDatabase.DB_EXECUTOR.execute(() -> {
+            cachedSelfProfile = db.userProfileDao().getProfileSync();
             NetPacket pkt = buildBasePacket(NetPacket.TYPE_PROFILE_UPDATE);
             broadcastPacket(pkt);
         });
@@ -795,6 +926,7 @@ public class PeerConnectionManager {
 
         if (pkt.senderId != null && serverSocket != null) {
             inboundSockets.put(pkt.senderId, serverSocket);
+            flushOutboundCallSignals(pkt.senderId);
         }
 
         AppDatabase.DB_EXECUTOR.execute(() -> {
@@ -810,6 +942,7 @@ public class PeerConnectionManager {
                     sendKnownGroupsToPeer(pkt.senderId);
                     sendSyncSummary(pkt.senderId);
                     flushPendingMessagesInternal(pkt.senderId);
+                    flushOutboundCallSignals(pkt.senderId);
                     if (pkt.isWebUser && serverSocket != null) {
                         sendWebSnapshot(serverSocket, pkt.senderId);
                         broadcastWebSnapshotToAll();
@@ -944,6 +1077,7 @@ public class PeerConnectionManager {
                 case NetPacket.TYPE_CALL_BUSY:
                 case NetPacket.TYPE_CALL_REJECT:
                 case NetPacket.TYPE_CALL_END:
+                case NetPacket.TYPE_CALL_STATE:
                     handleCallSignalingPacket(pkt, myId);
                     break;
             }
@@ -952,10 +1086,16 @@ public class PeerConnectionManager {
 
     private void handleGroupCallSignalingPacket(NetPacket pkt, String myId) {
         if (pkt.callId == null || pkt.groupId == null) return;
+        long now = System.currentTimeMillis();
+        if (callSignalingBuffer.isCallTerminated(pkt.callId, now)) return;
+
         AppControlManager.AppGateState gate = getGateState();
         if (gate != null && !gate.groupCallsEnabled) return;
         GroupEntity group = db.groupDao().getGroupSync(pkt.groupId);
         if (!isPeerAuthorizedForGroup(group, pkt.senderId)) {
+            return;
+        }
+        if (group != null && group.isPrivate && !group.isJoined && !myId.equals(group.ownerId) && !pkt.isWebUser) {
             return;
         }
 
@@ -966,7 +1106,7 @@ public class PeerConnectionManager {
                 r.groupId = pkt.groupId;
                 r.groupName = pkt.groupName != null ? pkt.groupName : (group != null ? group.name : "Group Call");
                 r.callType = pkt.callType != null ? pkt.callType : "GROUP_VOICE";
-                r.startedAtMs = System.currentTimeMillis();
+                r.startedAtMs = now;
                 return r;
             });
             if (room.participants.size() >= MAX_GROUP_CALL_PARTICIPANTS
@@ -985,7 +1125,7 @@ public class PeerConnectionManager {
             participant.isWebUser = pkt.isWebUser;
             participant.muted = pkt.muted;
             participant.videoEnabled = pkt.videoEnabled;
-            participant.state = "CONNECTED";
+            participant.state = "JOINED";
             room.participants.put(pkt.senderId, participant);
             notifyActiveGroupCallsChanged();
         } else if (NetPacket.TYPE_GROUP_CALL_STATE.equals(pkt.type)) {
@@ -1009,7 +1149,7 @@ public class PeerConnectionManager {
             }
         }
 
-        // Relay group call signaling to web clients
+        // Relay group call signaling to authorized web clients
         if (localHttpServer != null) {
             if (group != null && group.isPrivate) {
                 List<GroupMemberEntity> members = db.groupDao().getMembersSync(group.groupId);
@@ -1026,11 +1166,15 @@ public class PeerConnectionManager {
             }
         }
 
-        if (callSignalListener != null) {
-            new Handler(Looper.getMainLooper()).post(() -> callSignalListener.onCallSignal(pkt));
-        } else if (NetPacket.TYPE_GROUP_CALL_INVITE.equals(pkt.type)
-                && (group == null || (!group.isMuted && group.isJoined))) {
-            notificationHelper.showIncomingCallNotification(pkt);
+        CallSignalListener listener = this.callSignalListener;
+        if (listener != null) {
+            new Handler(Looper.getMainLooper()).post(() -> listener.onCallSignal(pkt));
+        } else {
+            callSignalingBuffer.bufferIncoming(pkt, now);
+            if (NetPacket.TYPE_GROUP_CALL_INVITE.equals(pkt.type)
+                    && (group == null || (!group.isMuted && group.isJoined))) {
+                notificationHelper.showIncomingCallNotification(pkt);
+            }
         }
     }
 
@@ -1054,9 +1198,10 @@ public class PeerConnectionManager {
     }
 
     public void startOrJoinGroupCall(String callId, String groupId, String groupName, String callType,
-                                     boolean muted, boolean videoEnabled) {
+                                     boolean muted, boolean videoEnabled, Runnable onReady) {
         AppDatabase.DB_EXECUTOR.execute(() -> {
             UserProfileEntity me = db.userProfileDao().getProfileSync();
+            cachedSelfProfile = me;
             String myId = me != null ? me.deviceId : prefs.getOrCreateDeviceId();
             String myName = me != null ? me.name : "Me";
 
@@ -1077,7 +1222,7 @@ public class PeerConnectionManager {
             self.isWebUser = false;
             self.muted = muted;
             self.videoEnabled = videoEnabled;
-            self.state = "CONNECTED";
+            self.state = "JOINED";
             room.participants.put(myId, self);
             notifyActiveGroupCallsChanged();
 
@@ -1095,7 +1240,16 @@ public class PeerConnectionManager {
             } else {
                 broadcastPacket(join);
             }
+
+            if (onReady != null) {
+                new Handler(Looper.getMainLooper()).post(onReady);
+            }
         });
+    }
+
+    public void startOrJoinGroupCall(String callId, String groupId, String groupName, String callType,
+                                     boolean muted, boolean videoEnabled) {
+        startOrJoinGroupCall(callId, groupId, groupName, callType, muted, videoEnabled, null);
     }
 
     public void updateGroupCallSelfState(String callId, String groupId, boolean muted, boolean videoEnabled) {
@@ -1185,6 +1339,18 @@ public class PeerConnectionManager {
     }
 
     private void handleCallSignalingPacket(NetPacket pkt, String myId) {
+        long now = System.currentTimeMillis();
+        if (pkt.callId != null && callSignalingBuffer.isCallTerminated(pkt.callId, now)) {
+            return;
+        }
+        // Enforce Private Group member authorization on group WebRTC offer/answer/ICE packets
+        if (pkt.groupId != null && !pkt.groupId.isEmpty()) {
+            GroupEntity group = db.groupDao().getGroupSync(pkt.groupId);
+            if (!isPeerAuthorizedForGroup(group, pkt.senderId)) {
+                return;
+            }
+        }
+
         // Track call lifecycle for call logs when host relays web-to-web calls
         if (pkt.callId != null && (pkt.groupId == null || pkt.groupId.isEmpty())) {
             if (NetPacket.TYPE_CALL_OFFER.equals(pkt.type)) {
@@ -1194,13 +1360,13 @@ public class PeerConnectionManager {
                         pkt.senderName != null ? pkt.senderName : "Peer",
                         pkt.targetId,
                         pkt.callType,
-                        System.currentTimeMillis()
+                        now
                 ));
             } else if (NetPacket.TYPE_CALL_ANSWER.equals(pkt.type)) {
                 RelayedCallRecord rec = activeRelayedCalls.get(pkt.callId);
                 if (rec != null) {
                     rec.connected = true;
-                    rec.connectedAtMs = System.currentTimeMillis();
+                    rec.connectedAtMs = now;
                 }
             }
         }
@@ -1217,15 +1383,20 @@ public class PeerConnectionManager {
         }
 
         // Targeted directly at this Android host device
-        if (callSignalListener != null) {
-            new Handler(Looper.getMainLooper()).post(() -> callSignalListener.onCallSignal(pkt));
-        } else if (NetPacket.TYPE_CALL_OFFER.equals(pkt.type)) {
-            notificationHelper.showIncomingCallNotification(pkt);
-        } else if (NetPacket.TYPE_CALL_END.equals(pkt.type)
-                || NetPacket.TYPE_CALL_REJECT.equals(pkt.type)
-                || NetPacket.TYPE_CALL_BUSY.equals(pkt.type)) {
-            notificationHelper.clearActiveIncomingCallIfMatches(pkt.callId);
-            persistRelayedCallLog(pkt);
+        CallSignalListener listener = this.callSignalListener;
+        if (listener != null) {
+            new Handler(Looper.getMainLooper()).post(() -> listener.onCallSignal(pkt));
+        } else {
+            if (CallSignalingBuffer.isTerminalCallType(pkt.type)) {
+                callSignalingBuffer.markCallTerminated(pkt.callId, now);
+                notificationHelper.clearActiveIncomingCallIfMatches(pkt.callId);
+                persistRelayedCallLog(pkt);
+            } else {
+                callSignalingBuffer.bufferIncoming(pkt, now);
+                if (NetPacket.TYPE_CALL_OFFER.equals(pkt.type)) {
+                    notificationHelper.showIncomingCallNotification(pkt);
+                }
+            }
         }
     }
 
@@ -1754,9 +1925,15 @@ public class PeerConnectionManager {
             if (ok) {
                 crypto.resetAttempts(rateKey);
                 reply.challengeAccepted = true;
+                long joinedNow = System.currentTimeMillis();
                 db.groupDao().upsertMember(new GroupMemberEntity(
-                        pkt.groupId, pkt.senderId, pkt.senderName, "MEMBER", true, System.currentTimeMillis()
+                        pkt.groupId, pkt.senderId, pkt.senderName, "MEMBER", true, joinedNow
                 ));
+                group.updatedAt = joinedNow;
+                db.groupDao().upsertGroup(group);
+                sendPacketToPeer(pkt.senderId, reply);
+                syncGroupMetadata(group);
+                return;
             } else {
                 long newLock = crypto.recordFailedAttempt(rateKey);
                 reply.challengeAccepted = false;
@@ -1796,11 +1973,20 @@ public class PeerConnectionManager {
     public NetPacket buildBasePacket(String type) {
         NetPacket pkt = new NetPacket();
         pkt.version = 1;
+        pkt.protocolVersion = 1;
         pkt.packetId = UUID.randomUUID().toString();
         pkt.type = type;
+        pkt.messageType = type;
         pkt.event = type;
         pkt.timestamp = System.currentTimeMillis();
-        UserProfileEntity me = db.userProfileDao().getProfileSync();
+        UserProfileEntity me = cachedSelfProfile;
+        if (me == null && Looper.myLooper() != Looper.getMainLooper()) {
+            try {
+                me = db.userProfileDao().getProfileSync();
+                cachedSelfProfile = me;
+            } catch (Exception ignored) {
+            }
+        }
         NetworkUtils.LocalNetworkInfo net = NetworkUtils.detectLocalNetwork(context);
         pkt.senderId = me != null ? me.deviceId : prefs.getOrCreateDeviceId();
         pkt.senderName = me != null ? me.name : "Peer";
@@ -1809,7 +1995,9 @@ public class PeerConnectionManager {
         pkt.senderIp = net.ipAddress;
         pkt.senderPort = prefs.getServerPort();
         pkt.connectionMode = net.routeType;
-        pkt.avatarBase64 = me != null ? AvatarHelper.encodeAvatarBase64(me.avatarPath) : "";
+        pkt.avatarBase64 = (me != null && Looper.myLooper() != Looper.getMainLooper())
+                ? AvatarHelper.encodeAvatarBase64(me.avatarPath)
+                : "";
         return pkt;
     }
 
@@ -1883,6 +2071,7 @@ public class PeerConnectionManager {
         private final String key;
         private final String ip;
         private final int port;
+        private volatile String discoveredPeerId;
 
         PeerClientSocket(URI serverUri, String key, String ip, int port) {
             super(serverUri);
@@ -1892,12 +2081,22 @@ public class PeerConnectionManager {
             setConnectionLostTimeout(10);
         }
 
+        void setDiscoveredPeerId(String peerId) {
+            if (peerId != null && !peerId.isEmpty()) {
+                this.discoveredPeerId = peerId;
+            }
+        }
+
         @Override
         public void onOpen(ServerHandshake handshakedata) {
             AppDatabase.DB_EXECUTOR.execute(() -> {
                 NetPacket hello = buildBasePacket(NetPacket.TYPE_HELLO);
                 send(serializePacket(hello));
                 flushPendingMessagesInternal(key);
+                flushOutboundCallSignals(key);
+                if (discoveredPeerId != null) {
+                    flushOutboundCallSignals(discoveredPeerId);
+                }
             });
         }
 
@@ -1905,6 +2104,11 @@ public class PeerConnectionManager {
         public void onMessage(String message) {
             try {
                 NetPacket pkt = normalizeIncomingPacket(message);
+                if (pkt != null && pkt.senderId != null && !pkt.senderId.isEmpty()) {
+                    setDiscoveredPeerId(pkt.senderId);
+                    outboundClients.putIfAbsent(pkt.senderId, this);
+                    flushOutboundCallSignals(pkt.senderId);
+                }
                 handleIncomingPacket(pkt, ip, null);
             } catch (Exception ignored) {
             }
@@ -1912,12 +2116,20 @@ public class PeerConnectionManager {
 
         @Override
         public void onClose(int code, String reason, boolean remote) {
-            outboundClients.remove(key);
+            cleanupMappings();
         }
 
         @Override
         public void onError(Exception ex) {
-            outboundClients.remove(key);
+            cleanupMappings();
+        }
+
+        private void cleanupMappings() {
+            outboundClients.remove(key, this);
+            if (discoveredPeerId != null) {
+                outboundClients.remove(discoveredPeerId, this);
+            }
+            outboundClientsByIpPort.remove(ip + ":" + port, this);
         }
     }
 }

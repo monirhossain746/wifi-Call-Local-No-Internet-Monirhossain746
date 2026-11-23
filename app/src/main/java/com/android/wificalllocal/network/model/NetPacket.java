@@ -26,6 +26,7 @@ public class NetPacket {
     public static final String TYPE_CALL_BUSY = "CALL_BUSY";
     public static final String TYPE_CALL_REJECT = "CALL_REJECT";
     public static final String TYPE_CALL_END = "CALL_END";
+    public static final String TYPE_CALL_STATE = "CALL_STATE";
     public static final String TYPE_GROUP_CALL_INVITE = "GROUP_CALL_INVITE";
     public static final String TYPE_GROUP_CALL_JOIN = "GROUP_CALL_JOIN";
     public static final String TYPE_GROUP_CALL_LEAVE = "GROUP_CALL_LEAVE";

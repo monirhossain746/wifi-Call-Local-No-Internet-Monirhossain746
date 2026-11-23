@@ -78,7 +78,8 @@
       videoOn: true,
       timerHandle: null,
       connectedAt: 0,
-      pendingOfferSdp: null
+      pendingOfferSdp: null,
+      iceQueues: {}
     }
   };
 
@@ -1226,8 +1227,7 @@
         el.btnCallFlip.classList.remove('hidden');
         addOrUpdateGroupMediaTile(state.webUserId, (state.displayName || 'Me') + ' (You)', stream, true, true);
       }
-      startCallTimer();
-      el.callStatusText.textContent = 'Connected to Group Call';
+      el.callStatusText.textContent = 'Waiting for participants…';
 
       sendPacket(existing ? 'GROUP_CALL_JOIN' : 'GROUP_CALL_INVITE', {
         callId: callId,
@@ -1339,7 +1339,7 @@
     };
 
     pc.ontrack = function (ev) {
-      const stream = ev.streams[0];
+      const stream = (ev.streams && ev.streams[0]) || new MediaStream([ev.track]);
       if (!stream) return;
       if (groupId) {
         const isVideo = state.call.callType === 'GROUP_VIDEO';
@@ -1350,21 +1350,47 @@
         } else {
           el.remoteAudio.srcObject = stream;
         }
-        if (!state.call.connectedAt) {
-          startCallTimer();
-        }
       }
     };
 
     pc.onconnectionstatechange = function () {
       if (pc.connectionState === 'connected') {
-        el.callStatusText.textContent = 'Connected';
+        el.callStatusText.textContent = groupId ? 'Connected to Group Call' : 'Connected';
         if (!state.call.connectedAt) startCallTimer();
-      } else if (!groupId && (pc.connectionState === 'failed' || pc.connectionState === 'closed' || pc.connectionState === 'disconnected')) {
+      } else if (!groupId && (pc.connectionState === 'failed' || pc.connectionState === 'closed')) {
         endCurrentCall(false);
       }
     };
     return pc;
+  }
+
+  async function drainIceQueue(peerId, pc) {
+    const queue = state.call.iceQueues[peerId];
+    if (!queue || !queue.length || !pc || !pc.remoteDescription) return;
+    state.call.iceQueues[peerId] = [];
+    for (let i = 0; i < queue.length; i++) {
+      try {
+        await pc.addIceCandidate(queue[i]);
+      } catch (ignored) {}
+    }
+  }
+
+  async function enqueueOrAddIce(peerId, pc, pkt) {
+    if (!pkt || !pkt.iceCandidate) return;
+    const candidate = new RTCIceCandidate({
+      candidate: pkt.iceCandidate,
+      sdpMid: pkt.iceSdpMid,
+      sdpMLineIndex: pkt.iceSdpMLineIndex || 0
+    });
+    if (pc && pc.remoteDescription && pc.remoteDescription.type) {
+      try {
+        await pc.addIceCandidate(candidate);
+      } catch (ignored) {}
+    } else {
+      const key = peerId || '__default__';
+      state.call.iceQueues[key] = state.call.iceQueues[key] || [];
+      state.call.iceQueues[key].push(candidate);
+    }
   }
 
   async function handleIncomingCallSignal(type, pkt) {
@@ -1392,6 +1418,7 @@
           state.call.localStream.getTracks().forEach(function (track) { pc.addTrack(track, state.call.localStream); });
         }
         await pc.setRemoteDescription(new RTCSessionDescription({ type: 'offer', sdp: pkt.sdp }));
+        await drainIceQueue(pkt.senderId, pc);
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
         sendPacket('CALL_ANSWER', {
@@ -1430,15 +1457,19 @@
         setTimeout(function () { endCurrentCall(false); }, 900);
       } else if (type === 'CALL_ANSWER' && targetPc && pkt.sdp) {
         await targetPc.setRemoteDescription(new RTCSessionDescription({ type: 'answer', sdp: pkt.sdp }));
-        el.callStatusText.textContent = 'Connecting WebRTC…';
-      } else if (type === 'CALL_ICE' && targetPc && pkt.iceCandidate) {
-        try {
-          await targetPc.addIceCandidate(new RTCIceCandidate({
-            candidate: pkt.iceCandidate,
-            sdpMid: pkt.iceSdpMid,
-            sdpMLineIndex: pkt.iceSdpMLineIndex || 0
-          }));
-        } catch (ignored) {}
+        await drainIceQueue(pkt.senderId || state.call.peerId, targetPc);
+        el.callStatusText.textContent = 'Establishing media connection…';
+      } else if (type === 'CALL_ICE' && pkt.iceCandidate) {
+        await enqueueOrAddIce(pkt.senderId || state.call.peerId, targetPc, pkt);
+      } else if (type === 'CALL_STATE') {
+        const badges = [];
+        if (pkt.muted) badges.push('Remote mic muted');
+        if (pkt.videoEnabled === false) badges.push('Remote camera off');
+        if (badges.length > 0) {
+          el.callStatusText.textContent = badges.join(' • ');
+        } else if (state.call.connectedAt) {
+          el.callStatusText.textContent = state.call.isGroupCall ? 'Connected to Group Call' : 'Connected';
+        }
       } else if (type === 'CALL_END' && !state.call.isGroupCall) {
         el.callStatusText.textContent = 'Call ended';
         setTimeout(function () { endCurrentCall(false); }, 700);
@@ -1464,11 +1495,12 @@
       }
       el.incomingActions.classList.add('hidden');
       el.activeActions.classList.remove('hidden');
-      el.callStatusText.textContent = 'Connecting WebRTC…';
+      el.callStatusText.textContent = 'Establishing media connection…';
 
       const pc = createPeerConnection(state.call.peerId, state.call.callId, null);
       stream.getTracks().forEach(function (track) { pc.addTrack(track, stream); });
       await pc.setRemoteDescription(new RTCSessionDescription({ type: 'offer', sdp: state.call.pendingOfferSdp }));
+      await drainIceQueue(state.call.peerId, pc);
       const answer = await pc.createAnswer();
       await pc.setLocalDescription(answer);
       sendPacket('CALL_ANSWER', {
@@ -1497,6 +1529,13 @@
         muted: state.call.muted,
         videoEnabled: state.call.videoOn
       });
+    } else if (state.call.peerId) {
+      sendPacket('CALL_STATE', {
+        targetId: state.call.peerId,
+        callId: state.call.callId,
+        muted: state.call.muted,
+        videoEnabled: state.call.videoOn
+      });
     }
   };
 
@@ -1509,6 +1548,13 @@
       sendPacket('GROUP_CALL_STATE', {
         callId: state.call.callId,
         groupId: state.call.groupId,
+        muted: state.call.muted,
+        videoEnabled: state.call.videoOn
+      });
+    } else if (state.call.peerId) {
+      sendPacket('CALL_STATE', {
+        targetId: state.call.peerId,
+        callId: state.call.callId,
         muted: state.call.muted,
         videoEnabled: state.call.videoOn
       });
@@ -1604,7 +1650,7 @@
       active: false, isGroupCall: false, callId: null, groupId: null, peerId: null, peerName: '',
       callType: 'VOICE', isIncoming: false, facingMode: 'user', pc: null, meshPcs: {},
       remoteStreams: {}, localStream: null, muted: false, videoOn: true,
-      timerHandle: null, connectedAt: 0, pendingOfferSdp: null
+      timerHandle: null, connectedAt: 0, pendingOfferSdp: null, iceQueues: {}
     };
   }
 
